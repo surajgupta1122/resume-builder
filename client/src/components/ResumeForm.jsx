@@ -432,7 +432,7 @@ function Card({ Icon, title, subtitle, badge, children }) {
           <p className="text-xs text-gray-500">{subtitle}</p>
         </div>
         {badge && (
-          <span className="bg-blue-500 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+          <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
             {badge}
           </span>
         )}
