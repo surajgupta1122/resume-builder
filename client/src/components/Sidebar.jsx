@@ -1,9 +1,9 @@
-import { 
-  PencilSquareIcon, 
-  FolderIcon, 
-  RectangleGroupIcon, 
+import {
+  PencilSquareIcon,
+  FolderIcon,
+  RectangleGroupIcon,
   EyeIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Sidebar({ currentPage, setPage }) {
@@ -26,7 +26,7 @@ export default function Sidebar({ currentPage, setPage }) {
         {items.map((item) => {
           const Icon = item.icon;
           const isActive = currentPage === item.id;
-          
+
           return (
             <button
               key={item.id}
@@ -37,16 +37,14 @@ export default function Sidebar({ currentPage, setPage }) {
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
-              <Icon 
+              <Icon
                 className={`w-6 h-6 shrink-0 transition-colors ${
-                  isActive 
-                    ? "text-blue-600" 
+                  isActive
+                    ? "text-blue-600"
                     : "text-gray-400 group-hover:text-gray-600"
-                }`} 
+                }`}
               />
               <span>{item.label}</span>
-              
-              {/* Active Indicator Dot */}
               {isActive && (
                 <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-600 shadow-sm" />
               )}

@@ -38,7 +38,6 @@ export default function Admin({ setPage }) {
       .finally(() => setLoading(false));
   }, []);
 
-  // CSV export helper
   const exportCSV = (rows, filename) => {
     if (!rows.length) return alert("No data to export");
 
@@ -65,12 +64,7 @@ export default function Admin({ setPage }) {
   };
 
   const tabs = [
-    {
-      id: "users",
-      label: "Users",
-      Icon: UsersIcon,
-      count: users.length,
-    },
+    { id: "users", label: "Users", Icon: UsersIcon, count: users.length },
     {
       id: "activity",
       label: "User Activity",
@@ -99,7 +93,6 @@ export default function Admin({ setPage }) {
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
         <p className="text-gray-600 mt-1">
@@ -107,7 +100,6 @@ export default function Admin({ setPage }) {
         </p>
       </div>
 
-      {/* Stats cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatCard
           icon={UsersIcon}
@@ -135,7 +127,6 @@ export default function Admin({ setPage }) {
         />
       </div>
 
-      {/* Tabs */}
       <div className="flex gap-2 mb-6 flex-wrap">
         {tabs.map((t) => {
           const isActive = tab === t.id;
@@ -172,11 +163,9 @@ export default function Admin({ setPage }) {
         </div>
       )}
 
-      {/* USERS */}
       {!loading && tab === "users" && (
         <TableCard
           title="All Users"
-          rows={users}
           onExport={() => exportCSV(users, "users")}
         >
           <Table
@@ -192,12 +181,10 @@ export default function Admin({ setPage }) {
         </TableCard>
       )}
 
-      {/* USER ACTIVITY */}
       {!loading && tab === "activity" && (
         <TableCard
           title="User Activity Report"
           subtitle="Each user and how many resumes they've created"
-          rows={activity}
           onExport={() => exportCSV(activity, "user_activity")}
         >
           <Table
@@ -219,11 +206,9 @@ export default function Admin({ setPage }) {
         </TableCard>
       )}
 
-      {/* RESUMES */}
       {!loading && tab === "resumes" && (
         <TableCard
           title="All Resumes"
-          rows={resumes}
           onExport={() => exportCSV(resumes, "resumes")}
         >
           <Table
@@ -247,12 +232,10 @@ export default function Admin({ setPage }) {
         </TableCard>
       )}
 
-      {/* TEMPLATE USAGE */}
       {!loading && tab === "usage" && (
         <TableCard
           title="Template Usage Report"
           subtitle="Which templates are used most"
-          rows={usage}
           onExport={() => exportCSV(usage, "template_usage")}
         >
           <Table
@@ -278,7 +261,6 @@ export default function Admin({ setPage }) {
         </TableCard>
       )}
 
-      {/* TEMPLATES (from code, not MySQL) */}
       {!loading && tab === "templates" && (
         <TableCard
           title="Available Templates"
@@ -314,8 +296,6 @@ export default function Admin({ setPage }) {
     </div>
   );
 }
-
-/* ---------- Helpers ---------- */
 
 function StatCard({ icon: Icon, color, label, value }) {
   const colors = {

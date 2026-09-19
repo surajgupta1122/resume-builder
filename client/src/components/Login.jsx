@@ -40,7 +40,6 @@ export default function Login({ setUser, setPage }) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Side - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-12 pt-12 border-r-2 border-blue-200 rounded-r-3xl">
         <ResumeIcon size={180} />
         <div className="max-w-md text-center mt-6">
@@ -58,7 +57,6 @@ export default function Login({ setUser, setPage }) {
         </div>
       </div>
 
-      {/* Right Side - Login Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-white">
         <div className="w-full max-w-xl p-12 bg-white rounded-3xl">
           <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">

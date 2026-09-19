@@ -24,6 +24,8 @@ const emptyResume = {
   email: "",
   phone: "",
   location: "",
+  linkedin: "",
+  website: "",
   title: "",
   summary: "",
   education: [{ degree: "", institute: "", startYear: "", passYear: "" }],
@@ -36,27 +38,29 @@ const emptyResume = {
       description: "",
     },
   ],
+  projects: [{ name: "", tech: "", link: "", description: "" }],
   skills: [],
-  languages: ["English", "Hindi"],
+  certifications: [{ name: "", issuer: "", year: "" }],
+  languages: [],
 };
+
+const withDefaults = (data) => ({ ...emptyResume, ...data });
 
 function App() {
   const [user, setUser] = useState(() => safeParse("user", null));
   const [page, setPage] = useState(user ? "form" : "login");
   const [resumeData, setResumeData] = useState(() =>
-    safeParse("resumeData", emptyResume)
+    withDefaults(safeParse("resumeData", emptyResume))
   );
   const [template, setTemplate] = useState("minimal-mark");
 
-  // When user logs in/out, load their own resume data
   useEffect(() => {
     if (!user || !user.id) return;
     const key = `resumeData_${user.id}`;
     const saved = safeParse(key, emptyResume);
-    setResumeData(saved);
+    setResumeData(withDefaults(saved));
   }, [user]);
 
-  // Save resumeData under the user-specific key whenever it changes
   useEffect(() => {
     if (!user || !user.id) return;
     localStorage.setItem(`resumeData_${user.id}`, JSON.stringify(resumeData));

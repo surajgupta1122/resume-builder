@@ -10,7 +10,6 @@ import TemplateATS from "./TemplateATS";
 import TemplateATSPro from "./TemplateATSPro";
 
 export const templateList = [
-  // MINIMAL
   {
     id: "minimal-mark",
     name: "Mark Brown",
@@ -27,7 +26,6 @@ export const templateList = [
     description: "Minimal — centered header",
     Component: TemplateMinimalSebastian,
   },
-  // PROFESSIONAL
   {
     id: "pro-isabel",
     name: "Isabel Mercado",
@@ -52,7 +50,6 @@ export const templateList = [
     description: "Professional — dark sidebar with photo",
     Component: TemplateProfessionalDark,
   },
-  // CREATIVE
   {
     id: "creative-isabel",
     name: "Creative Isabel",
@@ -77,7 +74,6 @@ export const templateList = [
     description: "Creative — dark sidebar timeline",
     Component: TemplateCreativeNoel,
   },
-  // ATS
   {
     id: "ats",
     name: "ATS-Friendly",
@@ -97,29 +93,13 @@ export const templateList = [
 ];
 
 export const templateCategories = [
-  {
-    id: "all",
-    label: "All Templates",
-    desc: "Browse every style at once",
-  },
-  {
-    id: "minimal",
-    label: "Minimal",
-    desc: "Clean, no color, only details",
-  },
+  { id: "all", label: "All Templates", desc: "Browse every style at once" },
+  { id: "minimal", label: "Minimal", desc: "Clean, no color, only details" },
   {
     id: "professional",
     label: "Professional",
     desc: "Sidebar and structured layouts",
   },
-  {
-    id: "creative",
-    label: "Creative",
-    desc: "Colorful sidebar design",
-  },
-  {
-    id: "ats",
-    label: "ATS-Friendly",
-    desc: "Plain format for job portals",
-  },
+  { id: "creative", label: "Creative", desc: "Colorful sidebar design" },
+  { id: "ats", label: "ATS-Friendly", desc: "Plain format for job portals" },
 ];

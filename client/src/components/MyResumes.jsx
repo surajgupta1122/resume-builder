@@ -34,7 +34,6 @@ export default function MyResumes({ setPage, setResumeData }) {
     try {
       const parsed = JSON.parse(resume.content);
       setResumeData(parsed);
-      localStorage.setItem("resumeData", JSON.stringify(parsed));
       setPage("preview");
     } catch {
       alert("Cannot open this resume.");

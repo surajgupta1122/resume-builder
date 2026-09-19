@@ -9,7 +9,12 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import LivePreview from "./LivePreview";
 
-export default function Preview({ resumeData, template, setTemplate, setPage }) {
+export default function Preview({
+  resumeData,
+  template,
+  setTemplate,
+  setPage,
+}) {
   const resumeRef = useRef();
   const d = resumeData;
 

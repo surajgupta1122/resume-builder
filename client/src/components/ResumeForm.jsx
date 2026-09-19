@@ -9,6 +9,9 @@ import {
   LightBulbIcon,
   ArrowRightIcon,
   EyeIcon,
+  CodeBracketIcon,
+  ShieldCheckIcon,
+  LanguageIcon,
 } from "@heroicons/react/24/outline";
 import LivePreview from "./LivePreview";
 
@@ -20,6 +23,7 @@ export default function ResumeForm({
   setTemplate,
 }) {
   const [skillInput, setSkillInput] = useState("");
+  const [langInput, setLangInput] = useState("");
 
   const update = (field, value) => {
     setResumeData({ ...resumeData, [field]: value });
@@ -69,6 +73,49 @@ export default function ResumeForm({
     ]);
   const removeExperience = (i) =>
     update("experience", resumeData.experience.filter((_, idx) => idx !== i));
+
+  const projects = resumeData.projects || [];
+  const certifications = resumeData.certifications || [];
+  const languages = resumeData.languages || [];
+
+  const updateProject = (i, field, value) => {
+    const arr = [...projects];
+    arr[i] = { ...arr[i], [field]: value };
+    update("projects", arr);
+  };
+  const addProject = () =>
+    update("projects", [
+      ...projects,
+      { name: "", tech: "", link: "", description: "" },
+    ]);
+  const removeProject = (i) =>
+    update("projects", projects.filter((_, idx) => idx !== i));
+
+  const updateCert = (i, field, value) => {
+    const arr = [...certifications];
+    arr[i] = { ...arr[i], [field]: value };
+    update("certifications", arr);
+  };
+  const addCert = () =>
+    update("certifications", [
+      ...certifications,
+      { name: "", issuer: "", year: "" },
+    ]);
+  const removeCert = (i) =>
+    update("certifications", certifications.filter((_, idx) => idx !== i));
+
+  const addLanguage = (e) => {
+    if (e.key === "Enter" || e.type === "click") {
+      e.preventDefault();
+      const l = langInput.trim();
+      if (!l) return;
+      if (languages.includes(l)) return setLangInput("");
+      update("languages", [...languages, l]);
+      setLangInput("");
+    }
+  };
+  const removeLanguage = (l) =>
+    update("languages", languages.filter((x) => x !== l));
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
@@ -151,6 +198,22 @@ export default function ResumeForm({
                   value={resumeData.location}
                   onChange={(e) => update("location", e.target.value)}
                   placeholder="Delhi, India"
+                />
+              </Field>
+              <Field label="LinkedIn (optional)">
+                <input
+                  className={inputClass}
+                  value={resumeData.linkedin || ""}
+                  onChange={(e) => update("linkedin", e.target.value)}
+                  placeholder="linkedin.com/in/yourname"
+                />
+              </Field>
+              <Field label="Portfolio / GitHub (optional)">
+                <input
+                  className={inputClass}
+                  value={resumeData.website || ""}
+                  onChange={(e) => update("website", e.target.value)}
+                  placeholder="github.com/yourname"
                 />
               </Field>
               <div className="md:col-span-2">
@@ -333,6 +396,77 @@ export default function ResumeForm({
           </Card>
 
           <Card
+            Icon={CodeBracketIcon}
+            title="Projects"
+            subtitle="Add projects you have built (very useful for freshers)"
+          >
+            <div className="space-y-4">
+              {projects.map((p, i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl relative"
+                >
+                  <button
+                    onClick={() => removeProject(i)}
+                    className="absolute top-2 right-2 text-red-400 hover:text-red-600"
+                    title="Remove project"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                  <Field label="Project Name">
+                    <input
+                      className={inputClass}
+                      value={p.name}
+                      onChange={(e) => updateProject(i, "name", e.target.value)}
+                      placeholder="Online Resume Builder"
+                    />
+                  </Field>
+                  <Field label="Tech Stack">
+                    <input
+                      className={inputClass}
+                      value={p.tech}
+                      onChange={(e) => updateProject(i, "tech", e.target.value)}
+                      placeholder="React, Node.js, MySQL"
+                    />
+                  </Field>
+                  <div className="md:col-span-2">
+                    <Field label="Link (GitHub / Live demo)">
+                      <input
+                        className={inputClass}
+                        value={p.link}
+                        onChange={(e) =>
+                          updateProject(i, "link", e.target.value)
+                        }
+                        placeholder="github.com/yourname/resume-builder"
+                      />
+                    </Field>
+                  </div>
+                  <div className="md:col-span-2">
+                    <Field label="Description">
+                      <textarea
+                        rows="2"
+                        className={inputClass + " resize-none"}
+                        value={p.description}
+                        onChange={(e) =>
+                          updateProject(i, "description", e.target.value)
+                        }
+                        placeholder="What does it do? What did you build?"
+                      />
+                    </Field>
+                  </div>
+                </div>
+              ))}
+              <button
+                onClick={addProject}
+                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+              >
+                <PlusIcon className="w-5 h-5" />
+                Add Project
+              </button>
+            </div>
+          </Card>
+
+          <Card
             Icon={WrenchScrewdriverIcon}
             title="Skills"
             subtitle="Add your key skills"
@@ -364,6 +498,104 @@ export default function ResumeForm({
                     {s}
                     <button
                       onClick={() => removeSkill(s)}
+                      className="text-blue-500 hover:text-red-500"
+                    >
+                      <XMarkIcon className="w-4 h-4" />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </Card>
+
+          <Card
+            Icon={ShieldCheckIcon}
+            title="Certifications"
+            subtitle="Courses and certificates you have completed"
+          >
+            <div className="space-y-4">
+              {certifications.map((c, i) => (
+                <div
+                  key={i}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl relative"
+                >
+                  <button
+                    onClick={() => removeCert(i)}
+                    className="absolute top-2 right-2 text-red-400 hover:text-red-600"
+                    title="Remove certification"
+                  >
+                    <XMarkIcon className="w-5 h-5" />
+                  </button>
+                  <div className="md:col-span-2 pr-6">
+                    <Field label="Certificate Name">
+                      <input
+                        className={inputClass}
+                        value={c.name}
+                        onChange={(e) => updateCert(i, "name", e.target.value)}
+                        placeholder="React Developer Certificate"
+                      />
+                    </Field>
+                  </div>
+                  <Field label="Issued By">
+                    <input
+                      className={inputClass}
+                      value={c.issuer}
+                      onChange={(e) => updateCert(i, "issuer", e.target.value)}
+                      placeholder="Udemy / Coursera / Google"
+                    />
+                  </Field>
+                  <Field label="Year">
+                    <input
+                      className={inputClass}
+                      value={c.year}
+                      onChange={(e) => updateCert(i, "year", e.target.value)}
+                      placeholder="2025"
+                    />
+                  </Field>
+                </div>
+              ))}
+              <button
+                onClick={addCert}
+                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+              >
+                <PlusIcon className="w-5 h-5" />
+                Add Certification
+              </button>
+            </div>
+          </Card>
+
+          <Card
+            Icon={LanguageIcon}
+            title="Languages"
+            subtitle="Languages you can speak or write"
+          >
+            <div className="flex gap-2">
+              <input
+                className={inputClass + " flex-1"}
+                value={langInput}
+                onChange={(e) => setLangInput(e.target.value)}
+                onKeyDown={addLanguage}
+                placeholder="Type a language and press Enter..."
+              />
+              <button
+                onClick={addLanguage}
+                className="bg-blue-600 text-white px-5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center gap-1.5"
+              >
+                <PlusIcon className="w-5 h-5" />
+                Add
+              </button>
+            </div>
+
+            {languages.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {languages.map((l) => (
+                  <span
+                    key={l}
+                    className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-medium"
+                  >
+                    {l}
+                    <button
+                      onClick={() => removeLanguage(l)}
                       className="text-blue-500 hover:text-red-500"
                     >
                       <XMarkIcon className="w-4 h-4" />

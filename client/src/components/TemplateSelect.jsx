@@ -25,9 +25,21 @@ export default function TemplateSelect({
   const categoryIcons = {
     all: { Icon: Squares2X2Icon, bg: "bg-indigo-100", color: "text-indigo-600" },
     minimal: { Icon: SparklesIcon, bg: "bg-gray-100", color: "text-gray-700" },
-    professional: { Icon: BriefcaseIcon, bg: "bg-blue-100", color: "text-blue-600" },
-    creative: { Icon: PaintBrushIcon, bg: "bg-emerald-100", color: "text-emerald-600" },
-    ats: { Icon: DocumentCheckIcon, bg: "bg-amber-100", color: "text-amber-600" },
+    professional: {
+      Icon: BriefcaseIcon,
+      bg: "bg-blue-100",
+      color: "text-blue-600",
+    },
+    creative: {
+      Icon: PaintBrushIcon,
+      bg: "bg-emerald-100",
+      color: "text-emerald-600",
+    },
+    ats: {
+      Icon: DocumentCheckIcon,
+      bg: "bg-amber-100",
+      color: "text-amber-600",
+    },
   };
 
   const templates = templateList;

@@ -1,23 +1,28 @@
+import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import ResumeIcon from "./ResumeIcon";
 
 export default function Navbar({ user, onLogout, setPage }) {
+  const isAdmin = user && user.role === "admin";
+
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-20">
-      {/* Left: Logo + Brand */}
       <div className="flex items-center gap-1 -ml-4">
-        <ResumeIcon size={60} plain={true} className="border border-gray-300 rounded-lg" />
+        <ResumeIcon size={60} plain={true} className="border border-gray-900" />
         <div>
-          <h1 className="font-bold text-gray-900 leading-tight text-xl">
+          <h1 className="font-bold text-gray-900 leading-tight text-base">
             Resume Builder
           </h1>
-          <p className="text-sm text-gray-500 leading-tight">
-            Build Your Future
+          <p className="text-xs text-gray-500 leading-tight">
+            {isAdmin ? "Admin Panel" : "Build Your Future"}
           </p>
         </div>
       </div>
 
-      {/* Right: Help + Avatar + Logout */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
+        <button className="flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-blue-600 transition">
+          <QuestionMarkCircleIcon className="w-5 h-5" />
+          Help
+        </button>
 
         <div
           className="w-9 h-9 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white text-sm font-semibold"
@@ -32,11 +37,6 @@ export default function Navbar({ user, onLogout, setPage }) {
         >
           Logout
         </button>
-
-        <button className="text-sm font-medium text-gray-600 hover:text-blue-600 transition">
-          Help
-        </button>
-        
       </div>
     </header>
   );

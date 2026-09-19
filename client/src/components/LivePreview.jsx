@@ -22,13 +22,10 @@ export default function LivePreview({
 
   const renderTemplate = () => {
     switch (template) {
-      // MINIMAL
       case "minimal-sebastian":
         return (
           <TemplateMinimalSebastian resumeData={resumeData} large={large} />
         );
-
-      // PROFESSIONAL
       case "pro-isabel":
         return (
           <TemplateProfessionalIsabel resumeData={resumeData} large={large} />
@@ -44,8 +41,6 @@ export default function LivePreview({
         return (
           <TemplateProfessionalDark resumeData={resumeData} large={large} />
         );
-
-      // CREATIVE
       case "creative-isabel":
         return (
           <TemplateCreativeIsabel resumeData={resumeData} large={large} />
@@ -58,14 +53,10 @@ export default function LivePreview({
         return (
           <TemplateCreativeNoel resumeData={resumeData} large={large} />
         );
-
-      // ATS
       case "ats":
         return <TemplateATS resumeData={resumeData} large={large} />;
       case "ats-pro":
         return <TemplateATSPro resumeData={resumeData} large={large} />;
-
-      // DEFAULT = Minimal Mark
       case "minimal-mark":
       default:
         return <TemplateMinimalMark resumeData={resumeData} large={large} />;
