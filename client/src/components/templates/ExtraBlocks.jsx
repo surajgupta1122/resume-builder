@@ -7,7 +7,7 @@ export function ProjectList({ items = [], textSize = "", smallSize = "" }) {
       {items
         .filter((p) => p?.name?.trim())
         .map((p, i) => (
-          <div key={i}>
+          <div key={i} className="no-break">
             <p className={`${textSize} font-bold`}>
               {p.name}
               {p.tech && (
@@ -34,7 +34,7 @@ export function CertList({ items = [], smallSize = "" }) {
       {items
         .filter((c) => c?.name?.trim())
         .map((c, i) => (
-          <p key={i} className={`${smallSize} text-gray-700`}>
+          <p key={i} className={`${smallSize} text-gray-700 no-break`}>
             <span className="font-semibold">{c.name}</span>
             {(c.issuer || c.year) && (
               <span> — {[c.issuer, c.year].filter(Boolean).join(", ")}</span>

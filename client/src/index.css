@@ -1,3 +1,64 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ---------------------------------------------------------------
+   Print styles for "Text PDF (ATS)" — real selectable text
+   --------------------------------------------------------------- */
+
+/* Print copy is hidden on screen */
+#print-root {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 10mm;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+  }
+
+  /* Hide the whole app */
+  #root {
+    display: none !important;
+  }
+
+  /* Show only the print resume */
+  #print-root {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Force exact colors (dark sidebar, colored accents) */
+  #print-root,
+  #print-root * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Prevent sections from being cut in the middle of a page */
+  #print-root section,
+  #print-root .no-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Keep headers glued to their content */
+  #print-root h1,
+  #print-root h2,
+  #print-root h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Remove shadows / rounded corners that look bad in print */
+  #print-root * {
+    box-shadow: none !important;
+  }
+}

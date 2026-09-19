@@ -24,14 +24,18 @@ export default function Login({ setUser, setPage }) {
       });
       const data = await res.json();
 
+      console.log("Login response:", data);
+
       if (res.ok) {
+        // Save token FIRST
+        localStorage.setItem("token", data.token);
+        // setUser in App.jsx = handleLoginSuccess, which saves user + routes
         setUser(data.user);
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setPage(data.user.role === "admin" ? "admin" : "form");
       } else {
         alert(data.message || "Invalid email or password.");
       }
     } catch (error) {
+      console.error(error);
       alert("Server not reachable. Make sure the backend is running.");
     } finally {
       setLoading(false);

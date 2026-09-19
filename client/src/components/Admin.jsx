@@ -8,6 +8,7 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { templateList } from "./templates/templateList";
+import { authFetch } from "../api";
 
 export default function Admin({ setPage }) {
   const [users, setUsers] = useState([]);
@@ -18,21 +19,23 @@ export default function Admin({ setPage }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const get = (path) =>
+      authFetch(`http://localhost:5000/api/admin/${path}`).then((r) => {
+        if (!r.ok) return [];
+        return r.json();
+      });
+
     Promise.all([
-      fetch("http://localhost:5000/api/admin/users").then((r) => r.json()),
-      fetch("http://localhost:5000/api/admin/resumes").then((r) => r.json()),
-      fetch("http://localhost:5000/api/admin/template-usage").then((r) =>
-        r.json()
-      ),
-      fetch("http://localhost:5000/api/admin/user-activity").then((r) =>
-        r.json()
-      ),
+      get("users"),
+      get("resumes"),
+      get("template-usage"),
+      get("user-activity"),
     ])
       .then(([u, r, t, a]) => {
-        setUsers(u);
-        setResumes(r);
-        setUsage(t);
-        setActivity(a);
+        setUsers(Array.isArray(u) ? u : []);
+        setResumes(Array.isArray(r) ? r : []);
+        setUsage(Array.isArray(t) ? t : []);
+        setActivity(Array.isArray(a) ? a : []);
       })
       .catch(() => alert("Cannot load admin data. Is backend running?"))
       .finally(() => setLoading(false));

@@ -14,6 +14,7 @@ export default function LivePreview({
   resumeData,
   template = "minimal-mark",
   large = false,
+  bare = false,
   setTemplate,
 }) {
   const wrapClass = large ? "w-full" : "sticky top-20 self-start";
@@ -63,6 +64,9 @@ export default function LivePreview({
     }
   };
 
+  // bare = only the resume, no card/border (used for the print copy)
+  if (bare) return renderTemplate();
+
   return (
     <div className={wrapClass}>
       <div
@@ -85,6 +89,7 @@ export default function LivePreview({
         )}
 
         <div
+          id={large ? "resume-capture" : undefined}
           className={`rounded-xl overflow-hidden shadow-lg bg-white ${cardMin}`}
         >
           {renderTemplate()}

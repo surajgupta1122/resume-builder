@@ -1,9 +1,10 @@
-import { useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   ArrowLeftIcon,
   CloudArrowUpIcon,
   ArrowDownTrayIcon,
   CheckIcon,
+  PrinterIcon,
 } from "@heroicons/react/24/outline";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -15,17 +16,54 @@ export default function Preview({
   setTemplate,
   setPage,
 }) {
-  const resumeRef = useRef();
   const d = resumeData;
 
+  // PDF that looks exactly like the preview (multi-page, but text is an image)
   const downloadPDF = async () => {
-    const canvas = await html2canvas(resumeRef.current, { scale: 2 });
-    const imgData = canvas.toDataURL("image/png");
+    const el = document.getElementById("resume-capture");
+    if (!el) return alert("Resume preview not found");
+
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      backgroundColor: "#ffffff",
+      onclone: (doc) => {
+        const clone = doc.getElementById("resume-capture");
+        clone.style.borderRadius = "0";
+        clone.style.boxShadow = "none";
+      },
+    });
+
+    const imgData = canvas.toDataURL("image/jpeg", 0.95);
     const pdf = new jsPDF("p", "mm", "a4");
-    const width = pdf.internal.pageSize.getWidth();
-    const height = (canvas.height * width) / canvas.width;
-    pdf.addImage(imgData, "PNG", 0, 0, width, height);
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const imgH = (canvas.height * pageW) / canvas.width;
+
+    // First page, then keep adding pages and shifting the image upwards
+    let heightLeft = imgH;
+    let position = 0;
+    pdf.addImage(imgData, "JPEG", 0, position, pageW, imgH);
+    heightLeft -= pageH;
+    while (heightLeft > 0) {
+      position -= pageH;
+      pdf.addPage();
+      pdf.addImage(imgData, "JPEG", 0, position, pageW, imgH);
+      heightLeft -= pageH;
+    }
+
     pdf.save(`${d.name || "resume"}.pdf`);
+  };
+
+  // PDF with real, selectable text (ATS friendly) using the browser's
+  // "Save as PDF". The file name comes from the page title.
+  const printPDF = () => {
+    const oldTitle = document.title;
+    document.title = `${d.name || "resume"} - Resume`;
+    window.onafterprint = () => {
+      document.title = oldTitle;
+      window.onafterprint = null;
+    };
+    window.print();
   };
 
   const saveToDB = async () => {
@@ -106,17 +144,35 @@ export default function Preview({
           <ArrowDownTrayIcon className="w-5 h-5" />
           Download PDF
         </button>
+        <button
+          onClick={printPDF}
+          className="bg-white border-2 border-green-600 text-green-700 px-5 py-2.5 rounded-xl font-semibold hover:bg-green-50 transition flex items-center gap-2"
+        >
+          <PrinterIcon className="w-5 h-5" />
+          Print / Save as PDF
+        </button>
       </div>
 
-      <div ref={resumeRef}>
-        <LivePreview
-          resumeData={resumeData}
-          template={template}
-          setTemplate={setTemplate}
-          setPage={setPage}
-          large={true}
-        />
-      </div>
+      <LivePreview
+        resumeData={resumeData}
+        template={template}
+        setTemplate={setTemplate}
+        setPage={setPage}
+        large={true}
+      />
+
+      {/* Hidden on screen, shown only when printing */}
+      {createPortal(
+        <div id="print-root">
+          <LivePreview
+            resumeData={resumeData}
+            template={template}
+            large={true}
+            bare={true}
+          />
+        </div>,
+        document.body
+      )}
     </div>
   );
 }
