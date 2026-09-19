@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   PhoneIcon,
   EnvelopeIcon,
@@ -97,9 +99,6 @@ export default function TemplateCreativeGeometric({ resumeData: d, large = false
                   >
                     {e.institute} / {e.startYear}-{e.passYear}
                   </p>
-                  <p className={`${smallSize} text-gray-600 mt-0.5`}>
-                    {e.description || ""}
-                  </p>
                 </div>
               ))}
             </div>
@@ -119,7 +118,9 @@ export default function TemplateCreativeGeometric({ resumeData: d, large = false
                     {e.jobTitle} / {e.startDate}-{e.endDate}
                   </p>
                   {e.description && (
-                    <p className={`${smallSize} text-gray-700 mt-1 leading-relaxed`}>
+                    <p
+                      className={`${smallSize} text-gray-700 mt-1 leading-relaxed`}
+                    >
                       {e.description}
                     </p>
                   )}
@@ -134,6 +135,24 @@ export default function TemplateCreativeGeometric({ resumeData: d, large = false
               {d.skills.slice(0, 4).map((s, i) => (
                 <SkillBar key={i} name={s} pct={90 - i * 12} />
               ))}
+            </div>
+          )}
+
+          {hasProjects(d) && (
+            <div>
+              <SectionHead label="Projects" />
+              <ProjectList
+                items={d.projects}
+                textSize={textSize}
+                smallSize={smallSize}
+              />
+            </div>
+          )}
+
+          {hasCerts(d) && (
+            <div>
+              <SectionHead label="Certifications" />
+              <CertList items={d.certifications} smallSize={smallSize} />
             </div>
           )}
         </div>

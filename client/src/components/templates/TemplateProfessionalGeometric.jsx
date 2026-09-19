@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   EnvelopeIcon,
   PhoneIcon,
@@ -31,7 +33,6 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
 
   return (
     <div className={`bg-white ${pad} text-slate-900`}>
-      {/* Header with photo */}
       <div className="flex gap-5 mb-4">
         <div
           className={`shrink-0 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold ${
@@ -56,12 +57,9 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
         </div>
       </div>
 
-      {/* Teal divider bar */}
       <div className="h-1 mb-5" style={{ backgroundColor: teal }} />
 
-      {/* Two-column body */}
       <div className="grid grid-cols-5 gap-5">
-        {/* LEFT SIDEBAR (2/5) */}
         <div className={`col-span-2 ${space}`}>
           <Section label="Contacto">
             <div className={`${smallSize} text-gray-700 space-y-1.5`}>
@@ -83,10 +81,18 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
                   {d.location}
                 </p>
               )}
-              <p className="flex items-center gap-1.5 truncate">
-                <LinkIcon className={iconSize} />
-                linkedin.com/in/yourname
-              </p>
+              {d.linkedin && (
+                <p className="flex items-center gap-1.5 truncate">
+                  <LinkIcon className={iconSize} />
+                  {d.linkedin}
+                </p>
+              )}
+              {d.website && (
+                <p className="flex items-center gap-1.5 truncate">
+                  <LinkIcon className={iconSize} />
+                  {d.website}
+                </p>
+              )}
             </div>
           </Section>
 
@@ -103,10 +109,7 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
               <ul className={`${smallSize} text-gray-700 space-y-1`}>
                 {d.skills.map((s) => (
                   <li key={s} className="flex items-center gap-1.5">
-                    <CheckIcon
-                      className={iconSize}
-                      style={{ color: teal }}
-                    />
+                    <CheckIcon className={iconSize} style={{ color: teal }} />
                     {s}
                   </li>
                 ))}
@@ -117,14 +120,10 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
           {d.languages?.length > 0 && (
             <Section label="Languages">
               <ul className={`${smallSize} text-gray-700 space-y-1`}>
-                {d.languages.map((l, i) => (
+                {d.languages.map((l) => (
                   <li key={l} className="flex items-center gap-1.5">
-                    <CheckIcon
-                      className={iconSize}
-                      style={{ color: teal }}
-                    />
-                    {l}:{" "}
-                    {i === 0 ? "Native" : i === 1 ? "Intermediate" : "Beginner"}
+                    <CheckIcon className={iconSize} style={{ color: teal }} />
+                    {l}
                   </li>
                 ))}
               </ul>
@@ -132,7 +131,6 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
           )}
         </div>
 
-        {/* RIGHT MAIN (3/5) */}
         <div className={`col-span-3 ${space}`}>
           {d.experience?.[0]?.jobTitle && (
             <Section label="Professional Experience">
@@ -146,7 +144,7 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
                       {e.jobTitle}
                     </p>
                     <p className={`${smallSize} text-gray-500 italic mb-1`}>
-                      {e.location || "Location"} | {e.startDate} – {e.endDate}
+                      {e.startDate} – {e.endDate}
                     </p>
                     {e.description && (
                       <ul
@@ -183,6 +181,22 @@ export default function TemplateProfessionalGeometric({ resumeData: d, large = f
                   </div>
                 ))}
               </div>
+            </Section>
+          )}
+
+          {hasProjects(d) && (
+            <Section label="Projects">
+              <ProjectList
+                items={d.projects}
+                textSize={textSize}
+                smallSize={smallSize}
+              />
+            </Section>
+          )}
+
+          {hasCerts(d) && (
+            <Section label="Certifications">
+              <CertList items={d.certifications} smallSize={smallSize} />
             </Section>
           )}
         </div>

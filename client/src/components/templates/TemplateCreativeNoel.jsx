@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   UserIcon,
   PhoneIcon,
@@ -8,7 +10,9 @@ import {
   BriefcaseIcon,
   Cog6ToothIcon,
   LanguageIcon,
-  SparklesIcon,
+  LinkIcon,
+  CodeBracketIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 
 export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
@@ -48,21 +52,20 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
 
   return (
     <div className="grid grid-cols-5 min-h-full">
-      {/* LEFT DARK SIDEBAR */}
       <div
         className={`col-span-2 bg-slate-900 text-white ${spaceY} ${headPadding}`}
       >
-        {/* Name */}
         <div>
           <h1 className={`${nameSize} font-bold leading-tight uppercase`}>
             {d.name || "Your Name"}
           </h1>
-          <p className={`${titleSize} text-gray-400 mt-1 uppercase tracking-wider`}>
+          <p
+            className={`${titleSize} text-gray-400 mt-1 uppercase tracking-wider`}
+          >
             {d.title || "Your Job Title"}
           </p>
         </div>
 
-        {/* Circular photo */}
         <div
           className={`mx-auto ${
             large ? "w-40 h-40" : "w-20 h-20"
@@ -71,7 +74,6 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
           <UserIcon className={large ? "w-20 h-20" : "w-10 h-10"} />
         </div>
 
-        {/* Contact Me */}
         <div>
           <div className="flex items-center gap-2 mb-3">
             <div className="w-8 h-8 rounded-full bg-white text-slate-900 flex items-center justify-center shrink-0">
@@ -90,10 +92,18 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
                 {d.phone}
               </p>
             )}
-            <p className="flex items-center gap-2">
-              <GlobeAltIcon className={`${iconSize} shrink-0`} />
-              www.yoursite.com
-            </p>
+            {d.website && (
+              <p className="flex items-center gap-2 break-all">
+                <GlobeAltIcon className={`${iconSize} shrink-0`} />
+                {d.website}
+              </p>
+            )}
+            {d.linkedin && (
+              <p className="flex items-center gap-2 break-all">
+                <LinkIcon className={`${iconSize} shrink-0`} />
+                {d.linkedin}
+              </p>
+            )}
             {d.location && (
               <p className="flex items-center gap-2">
                 <MapPinIcon className={`${iconSize} shrink-0`} />
@@ -103,7 +113,6 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
           </div>
         </div>
 
-        {/* Education (with rounded dark block) */}
         {d.education?.[0]?.degree && (
           <div className="bg-slate-800 rounded-3xl p-4 -mx-2">
             <div className="flex items-center gap-2 mb-3">
@@ -131,35 +140,8 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
             </div>
           </div>
         )}
-
-        {/* References */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-full bg-white text-slate-900 flex items-center justify-center shrink-0">
-              <UserIcon className={iconSize} />
-            </div>
-            <h2
-              className={`${headSize} font-bold uppercase tracking-wider text-white`}
-            >
-              References
-            </h2>
-          </div>
-          <div className={`${smallSize} space-y-2 text-gray-300`}>
-            <div>
-              <p className="font-bold text-white">Reference One</p>
-              <p className="text-gray-500">Company Name</p>
-              <p className="text-gray-500">Tel: +1-000-000-0000</p>
-            </div>
-            <div>
-              <p className="font-bold text-white">Reference Two</p>
-              <p className="text-gray-500">Company Name</p>
-              <p className="text-gray-500">Email: ref@example.com</p>
-            </div>
-          </div>
-        </div>
       </div>
 
-      {/* RIGHT WHITE PANEL */}
       <div
         className={`col-span-3 bg-white text-slate-900 ${spaceY} ${headPadding}`}
       >
@@ -213,6 +195,24 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
           </div>
         )}
 
+        {hasProjects(d) && (
+          <div>
+            <CircleHead Icon={CodeBracketIcon} label="Projects" />
+            <ProjectList
+              items={d.projects}
+              textSize={textSize}
+              smallSize={smallSize}
+            />
+          </div>
+        )}
+
+        {hasCerts(d) && (
+          <div>
+            <CircleHead Icon={ShieldCheckIcon} label="Certifications" />
+            <CertList items={d.certifications} smallSize={smallSize} />
+          </div>
+        )}
+
         <div className="grid grid-cols-2 gap-6">
           {d.languages?.length > 0 && (
             <div>
@@ -224,14 +224,6 @@ export default function TemplateCreativeNoel({ resumeData: d, large = false }) {
               </ul>
             </div>
           )}
-          <div>
-            <CircleHead Icon={SparklesIcon} label="Hobbies" />
-            <ul className={`${smallSize} list-disc list-inside space-y-1`}>
-              <li>Reading Books</li>
-              <li>Traveling</li>
-              <li>Playing Chess</li>
-            </ul>
-          </div>
         </div>
       </div>
     </div>

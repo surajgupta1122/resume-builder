@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   PhoneIcon,
   EnvelopeIcon,
@@ -27,7 +29,6 @@ export default function TemplateMinimalMark({ resumeData: d, large = false }) {
 
   return (
     <div className={`bg-white ${pad} text-slate-900`}>
-      {/* Header */}
       <div className="flex justify-between items-start mb-6">
         <div>
           <h1 className={`${nameSize} font-bold leading-tight`}>
@@ -122,6 +123,22 @@ export default function TemplateMinimalMark({ resumeData: d, large = false }) {
                 <li key={s}>{s}</li>
               ))}
             </ul>
+          </Section>
+        )}
+
+        {hasProjects(d) && (
+          <Section label="PROJECTS">
+            <ProjectList
+              items={d.projects}
+              textSize={textSize}
+              smallSize={smallSize}
+            />
+          </Section>
+        )}
+
+        {hasCerts(d) && (
+          <Section label="CERTIFICATIONS">
+            <CertList items={d.certifications} smallSize={smallSize} />
           </Section>
         )}
       </div>

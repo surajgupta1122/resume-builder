@@ -1,3 +1,6 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
+
 export default function TemplateATSPro({ resumeData: d, large = false }) {
   const nameSize = large ? "text-4xl" : "text-2xl";
   const titleSize = large ? "text-base" : "text-xs";
@@ -9,11 +12,8 @@ export default function TemplateATSPro({ resumeData: d, large = false }) {
 
   const Section = ({ label, children }) => (
     <div>
-      {/* Black bar header */}
       <div className="bg-black text-white px-3 py-1.5 mb-3">
-        <h2
-          className={`${headSize} font-bold uppercase tracking-wider`}
-        >
+        <h2 className={`${headSize} font-bold uppercase tracking-wider`}>
           {label}
         </h2>
       </div>
@@ -26,7 +26,6 @@ export default function TemplateATSPro({ resumeData: d, large = false }) {
       className={`bg-white ${pad} text-black`}
       style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
-      {/* Centered header */}
       <div className="text-center mb-4">
         <h1 className={`${nameSize} font-bold tracking-wide uppercase`}>
           {d.name || "Full Name"}
@@ -36,7 +35,6 @@ export default function TemplateATSPro({ resumeData: d, large = false }) {
         </p>
       </div>
 
-      {/* Black contact bar */}
       <div
         className={`bg-black text-white px-4 py-2 mb-4 flex items-center justify-center gap-3 flex-wrap ${smallSize}`}
       >
@@ -120,15 +118,21 @@ export default function TemplateATSPro({ resumeData: d, large = false }) {
           </Section>
         )}
 
-        <Section label="Certifications & Professional Development">
-          <ul
-            className={`${smallSize} list-disc list-outside pl-5 space-y-1`}
-          >
-            <li>Certification One — Issuer, Year</li>
-            <li>Certification Two — Issuer, Year</li>
-            <li>Certification Three — Issuer, Year</li>
-          </ul>
-        </Section>
+        {hasProjects(d) && (
+          <Section label="Projects">
+            <ProjectList
+              items={d.projects}
+              textSize={textSize}
+              smallSize={smallSize}
+            />
+          </Section>
+        )}
+
+        {hasCerts(d) && (
+          <Section label="Certifications">
+            <CertList items={d.certifications} smallSize={smallSize} />
+          </Section>
+        )}
       </div>
     </div>
   );

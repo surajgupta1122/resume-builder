@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   PhoneIcon,
   EnvelopeIcon,
@@ -30,7 +32,6 @@ export default function TemplateMinimalSebastian({
 
   return (
     <div className={`bg-white ${pad} text-slate-900`}>
-      {/* Centered header */}
       <div className="text-center mb-6">
         <h1 className={`${nameSize} font-bold leading-tight`}>
           {(d.name || "Your Name").toUpperCase()}
@@ -120,6 +121,22 @@ export default function TemplateMinimalSebastian({
                 <li key={s}>{s}</li>
               ))}
             </ul>
+          </Section>
+        )}
+
+        {hasProjects(d) && (
+          <Section label="PROJECTS">
+            <ProjectList
+              items={d.projects}
+              textSize={textSize}
+              smallSize={smallSize}
+            />
+          </Section>
+        )}
+
+        {hasCerts(d) && (
+          <Section label="CERTIFICATIONS">
+            <CertList items={d.certifications} smallSize={smallSize} />
           </Section>
         )}
       </div>

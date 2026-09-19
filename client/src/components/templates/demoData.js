@@ -4,6 +4,8 @@ export const demoData = {
   phone: "Phone Number",
   email: "email@example.com",
   location: "City, Country",
+  linkedin: "linkedin.com/in/yourname",
+  website: "yoursite.com",
   summary:
     "2–4 lines tailored to the role. Mention years of experience, top tools/skills from the JD, and a quantified win.",
   education: [
@@ -32,6 +34,17 @@ export const demoData = {
         "Action + what you did + result/metric + tool/keyword. Add measurable outcomes.",
     },
   ],
+  projects: [
+    {
+      name: "Project Name",
+      tech: "Tools / Tech Stack",
+      link: "github.com/yourname/project",
+      description: "One-line impact and outcome.",
+    },
+  ],
   skills: ["Skill One", "Skill Two", "Skill Three", "Tool", "Method"],
+  certifications: [
+    { name: "Certification Name", issuer: "Issuer", year: "2024" },
+  ],
   languages: ["English", "Hindi"],
 };

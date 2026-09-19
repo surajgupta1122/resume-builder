@@ -1,10 +1,12 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   BriefcaseIcon,
   AcademicCapIcon,
   WrenchScrewdriverIcon,
   ShieldCheckIcon,
   LanguageIcon,
-  TrophyIcon,
+  CodeBracketIcon,
   EnvelopeIcon,
   PhoneIcon,
   MapPinIcon,
@@ -39,7 +41,6 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
 
   return (
     <div className={`bg-white ${pad} text-slate-900`}>
-      {/* Header: photo left, name + about right */}
       <div className="flex gap-5 mb-5">
         <div
           className={`shrink-0 border-2 border-slate-900 rounded-lg ${
@@ -61,7 +62,6 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
         </div>
       </div>
 
-      {/* Black contact bar */}
       <div
         className={`bg-slate-900 text-white rounded-md px-4 py-2.5 mb-6 grid grid-cols-2 gap-x-4 gap-y-1.5 ${smallSize}`}
       >
@@ -77,15 +77,21 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
           <MapPinIcon className={iconSize} />
           <span>{d.location || "City, Country"}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <LinkIcon className={iconSize} />
-          <span className="truncate">linkedin.com/in/yourname</span>
-        </div>
+        {d.linkedin && (
+          <div className="flex items-center gap-2">
+            <LinkIcon className={iconSize} />
+            <span className="truncate">{d.linkedin}</span>
+          </div>
+        )}
+        {d.website && (
+          <div className="flex items-center gap-2">
+            <LinkIcon className={iconSize} />
+            <span className="truncate">{d.website}</span>
+          </div>
+        )}
       </div>
 
-      {/* Two-column body */}
       <div className="grid grid-cols-2 gap-6">
-        {/* LEFT column */}
         <div className={space}>
           {d.experience?.[0]?.jobTitle && (
             <div>
@@ -94,9 +100,7 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
                 {d.experience.map((e, i) => (
                   <div key={i}>
                     <p className={`${textSize} font-bold`}>{e.jobTitle}</p>
-                    <p className={`${smallSize} text-gray-700`}>
-                      {e.company}
-                    </p>
+                    <p className={`${smallSize} text-gray-700`}>{e.company}</p>
                     <p className={`${smallSize} text-gray-500 italic mb-1`}>
                       {e.startDate} – {e.endDate}
                     </p>
@@ -126,7 +130,7 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
                   <div key={i}>
                     <p className={`${textSize} font-bold`}>{e.degree}</p>
                     <p className={`${smallSize} text-gray-700 italic`}>
-                      {e.institute}, {e.location || ""}
+                      {e.institute}
                     </p>
                     <p className={`${smallSize} text-gray-500 italic`}>
                       {e.startYear} – {e.passYear}
@@ -138,11 +142,13 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
           )}
         </div>
 
-        {/* RIGHT column */}
         <div className={space}>
           {d.skills?.length > 0 && (
             <div>
-              <SectionHead Icon={WrenchScrewdriverIcon} label="General Skills" />
+              <SectionHead
+                Icon={WrenchScrewdriverIcon}
+                label="General Skills"
+              />
               <ul
                 className={`${smallSize} text-gray-700 list-disc list-outside pl-4 columns-2 gap-2 space-y-0.5`}
               >
@@ -153,53 +159,38 @@ export default function TemplateProfessionalIsabel({ resumeData: d, large = fals
             </div>
           )}
 
-          <div>
-            <SectionHead Icon={ShieldCheckIcon} label="Certifications & Memberships" />
-            <div className={`${smallSize} text-gray-700 space-y-1.5`}>
-              <p>Member of the Global CIO Forum (2018 - Present)</p>
-              <p>
-                <span className="font-semibold">
-                  Certified Information Privacy Professional (CIPP)
-                </span>
-                <br />
-                <span className="italic text-gray-500">
-                  Issued by the International Association of Privacy
-                  Professionals (IAPP)
-                </span>
-              </p>
-              <p>
-                <span className="font-semibold">Certified ScrumMaster (CSM)</span>
-                <br />
-                <span className="italic text-gray-500">Issued by Scrum Alliance</span>
-              </p>
+          {hasProjects(d) && (
+            <div>
+              <SectionHead Icon={CodeBracketIcon} label="Projects" />
+              <ProjectList
+                items={d.projects}
+                textSize={textSize}
+                smallSize={smallSize}
+              />
             </div>
-          </div>
+          )}
+
+          {hasCerts(d) && (
+            <div>
+              <SectionHead Icon={ShieldCheckIcon} label="Certifications" />
+              <CertList items={d.certifications} smallSize={smallSize} />
+            </div>
+          )}
 
           {d.languages?.length > 0 && (
             <div>
               <SectionHead Icon={LanguageIcon} label="Languages" />
-              <div className={`${smallSize} text-gray-700 columns-2 gap-2 space-y-1`}>
+              <div
+                className={`${smallSize} text-gray-700 columns-2 gap-2 space-y-1`}
+              >
                 {d.languages.map((l) => (
                   <div key={l}>
                     <p className="font-semibold">{l}</p>
-                    <p className="italic text-gray-500">
-                      Native or Bilingual Proficiency
-                    </p>
                   </div>
                 ))}
               </div>
             </div>
           )}
-
-          <div>
-            <SectionHead Icon={TrophyIcon} label="Interests" />
-            <div className={`${smallSize} text-gray-700 grid grid-cols-2 gap-y-1`}>
-              <span>💡 Machine Learning</span>
-              <span>♟️ Chess</span>
-              <span>🥾 Hiking</span>
-              <span>⚡ Renewable Energy</span>
-            </div>
-          </div>
         </div>
       </div>
     </div>

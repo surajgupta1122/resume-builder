@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   EnvelopeIcon,
   PhoneIcon,
@@ -8,6 +10,7 @@ import {
   AcademicCapIcon,
   ShieldCheckIcon,
   LanguageIcon,
+  CodeBracketIcon,
 } from "@heroicons/react/24/outline";
 
 export default function TemplateProfessionalDark({ resumeData: d, large = false }) {
@@ -45,11 +48,9 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
 
   return (
     <div className="grid grid-cols-3 min-h-full">
-      {/* LEFT DARK SIDEBAR */}
       <div
         className={`col-span-1 bg-slate-900 text-white ${headPadding} ${spaceY}`}
       >
-        {/* Contact list */}
         <div className={`${smallSize} text-gray-300 space-y-2.5`}>
           {d.email && (
             <p className="flex items-center gap-2 break-all">
@@ -69,17 +70,20 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
               {d.location}
             </p>
           )}
-          <p className="flex items-center gap-2">
-            <GlobeAltIcon className={`${iconSize} shrink-0`} />
-            yoursite.com
-          </p>
-          <p className="flex items-center gap-2 break-all">
-            <LinkIcon className={`${iconSize} shrink-0`} />
-            linkedin.com/in/yourname
-          </p>
+          {d.website && (
+            <p className="flex items-center gap-2 break-all">
+              <GlobeAltIcon className={`${iconSize} shrink-0`} />
+              {d.website}
+            </p>
+          )}
+          {d.linkedin && (
+            <p className="flex items-center gap-2 break-all">
+              <LinkIcon className={`${iconSize} shrink-0`} />
+              {d.linkedin}
+            </p>
+          )}
         </div>
 
-        {/* Hard Skills */}
         {d.skills?.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -90,9 +94,7 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
               >
                 <BriefcaseIcon className={iconSize} />
               </div>
-              <h2
-                className={`${headSize} font-bold uppercase tracking-wider`}
-              >
+              <h2 className={`${headSize} font-bold uppercase tracking-wider`}>
                 Hard Skills
               </h2>
             </div>
@@ -104,35 +106,6 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
           </div>
         )}
 
-        {/* Soft Skills */}
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <div
-              className={`${
-                large ? "w-7 h-7" : "w-5 h-5"
-              } bg-white text-slate-900 rounded flex items-center justify-center`}
-            >
-              <ShieldCheckIcon className={iconSize} />
-            </div>
-            <h2 className={`${headSize} font-bold uppercase tracking-wider`}>
-              Soft Skills
-            </h2>
-          </div>
-          <div className="flex flex-wrap gap-1.5">
-            {["Attention to Detail", "Communication", "Time Management", "Collaboration", "Problem Solving"].map(
-              (s) => (
-                <span
-                  key={s}
-                  className={`${smallSize} bg-slate-700 text-gray-200 px-2 py-0.5 rounded`}
-                >
-                  {s}
-                </span>
-              )
-            )}
-          </div>
-        </div>
-
-        {/* Languages */}
         {d.languages?.length > 0 && (
           <div>
             <div className="flex items-center gap-2 mb-3">
@@ -148,16 +121,9 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
               </h2>
             </div>
             <div className={`${smallSize} space-y-1.5`}>
-              {d.languages.map((l, i) => (
+              {d.languages.map((l) => (
                 <div key={l}>
                   <p className="font-semibold text-white">{l}</p>
-                  <p className="text-gray-400 italic">
-                    {i === 0
-                      ? "Native or Bilingual"
-                      : i === 1
-                      ? "Full Professional"
-                      : "Working Proficiency"}
-                  </p>
                 </div>
               ))}
             </div>
@@ -165,11 +131,9 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
         )}
       </div>
 
-      {/* RIGHT WHITE PANEL */}
       <div
         className={`col-span-2 bg-white text-slate-900 ${headPadding} ${spaceY}`}
       >
-        {/* Name */}
         <div>
           <h1 className={`${nameSize} font-bold leading-tight`}>
             {d.name || "Your Name"}
@@ -192,9 +156,7 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
                 <div key={i} className="relative">
                   <div className="absolute -left-4 top-1.5 w-2 h-2 bg-sky-500 rounded-full" />
                   <p className={`${textSize} font-bold`}>{e.jobTitle}</p>
-                  <p className={`${smallSize} text-gray-700`}>
-                    {e.company}
-                  </p>
+                  <p className={`${smallSize} text-gray-700`}>{e.company}</p>
                   <p className={`${smallSize} text-sky-500 italic`}>
                     {e.startDate} – {e.endDate}
                   </p>
@@ -216,13 +178,21 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
           </RightSection>
         )}
 
-        <RightSection Icon={ShieldCheckIcon} label="Certificates">
-          <div className={`${smallSize} space-y-1.5`}>
-            <p>Certification One — Issuer, Year</p>
-            <p>Certification Two — Issuer, Year</p>
-            <p>Certification Three — Issuer, Year</p>
-          </div>
-        </RightSection>
+        {hasProjects(d) && (
+          <RightSection Icon={CodeBracketIcon} label="Projects">
+            <ProjectList
+              items={d.projects}
+              textSize={textSize}
+              smallSize={smallSize}
+            />
+          </RightSection>
+        )}
+
+        {hasCerts(d) && (
+          <RightSection Icon={ShieldCheckIcon} label="Certificates">
+            <CertList items={d.certifications} smallSize={smallSize} />
+          </RightSection>
+        )}
 
         {d.education?.[0]?.degree && (
           <RightSection Icon={AcademicCapIcon} label="Education">
@@ -231,9 +201,7 @@ export default function TemplateProfessionalDark({ resumeData: d, large = false 
                 <div key={i} className="relative">
                   <div className="absolute -left-4 top-1.5 w-2 h-2 bg-sky-500 rounded-full" />
                   <p className={`${textSize} font-bold`}>{e.degree}</p>
-                  <p className={`${smallSize} text-gray-700`}>
-                    {e.institute}
-                  </p>
+                  <p className={`${smallSize} text-gray-700`}>{e.institute}</p>
                   <p className={`${smallSize} text-sky-500 italic`}>
                     {e.startYear} – {e.passYear}
                   </p>

@@ -1,3 +1,6 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
+
 export default function TemplateATS({ resumeData: d, large = false }) {
   const nameSize = large ? "text-5xl" : "text-2xl";
   const titleSize = large ? "text-lg" : "text-xs";
@@ -22,8 +25,8 @@ export default function TemplateATS({ resumeData: d, large = false }) {
     d.phone,
     d.location,
     d.email,
-    "LinkedIn",
-    "Portfolio/Github",
+    d.linkedin,
+    d.website,
   ].filter(Boolean);
 
   return (
@@ -31,7 +34,6 @@ export default function TemplateATS({ resumeData: d, large = false }) {
       className={`bg-white ${pad} text-slate-900`}
       style={{ fontFamily: "Arial, Helvetica, sans-serif" }}
     >
-      {/* Centered Header */}
       <div className="text-center mb-6">
         <h1
           className={`${nameSize} font-extrabold tracking-wide text-slate-900 uppercase leading-tight`}
@@ -45,7 +47,6 @@ export default function TemplateATS({ resumeData: d, large = false }) {
         </p>
       </div>
 
-      {/* Contact row with pipe separators + top/bottom borders */}
       <div
         className={`${smallSize} text-gray-700 border-y border-gray-400 py-3 mb-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-1`}
       >
@@ -126,20 +127,21 @@ export default function TemplateATS({ resumeData: d, large = false }) {
           </Section>
         )}
 
-        <Section label="Certification">
-          <p className={`${textSize} text-gray-800`}>
-            Certification | Issuer | Year
-          </p>
-        </Section>
+        {hasProjects(d) && (
+          <Section label="Projects">
+            <ProjectList
+              items={d.projects}
+              textSize={textSize}
+              smallSize={smallSize}
+            />
+          </Section>
+        )}
 
-        <Section label="Projects">
-          <p className={`${textSize} text-gray-800 font-semibold`}>
-            Project Name | Tools
-          </p>
-          <p className={`${smallSize} text-gray-700 mt-1`}>
-            • One-line impact and outcome
-          </p>
-        </Section>
+        {hasCerts(d) && (
+          <Section label="Certifications">
+            <CertList items={d.certifications} smallSize={textSize} />
+          </Section>
+        )}
       </div>
     </div>
   );

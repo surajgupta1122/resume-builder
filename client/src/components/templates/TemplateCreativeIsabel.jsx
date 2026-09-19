@@ -1,3 +1,5 @@
+import { ProjectList, CertList } from "./ExtraBlocks";
+import { hasProjects, hasCerts } from "./resumeHelpers";
 import {
   UserIcon,
   AcademicCapIcon,
@@ -7,6 +9,9 @@ import {
   MapPinIcon,
   EnvelopeIcon,
   GlobeAltIcon,
+  LinkIcon,
+  CodeBracketIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 
 export default function TemplateCreativeIsabel({ resumeData: d, large = false }) {
@@ -43,7 +48,6 @@ export default function TemplateCreativeIsabel({ resumeData: d, large = false })
 
   return (
     <div className={`bg-white ${pad} text-slate-900`}>
-      {/* Top: photo + name | About Me */}
       <div className="grid grid-cols-2 gap-6 mb-6">
         <div>
           <div
@@ -76,9 +80,7 @@ export default function TemplateCreativeIsabel({ resumeData: d, large = false })
         </div>
       </div>
 
-      {/* Two column body */}
       <div className="grid grid-cols-2 gap-6">
-        {/* LEFT */}
         <div className={space}>
           <div>
             <SectionHead Icon={PhoneIcon} label="Contact" />
@@ -95,10 +97,18 @@ export default function TemplateCreativeIsabel({ resumeData: d, large = false })
                   {d.phone}
                 </p>
               )}
-              <p className="flex items-center gap-2">
-                <GlobeAltIcon className={`${iconSize} shrink-0`} />
-                yoursite.com
-              </p>
+              {d.website && (
+                <p className="flex items-center gap-2 break-all">
+                  <GlobeAltIcon className={`${iconSize} shrink-0`} />
+                  {d.website}
+                </p>
+              )}
+              {d.linkedin && (
+                <p className="flex items-center gap-2 break-all">
+                  <LinkIcon className={`${iconSize} shrink-0`} />
+                  {d.linkedin}
+                </p>
+              )}
               {d.email && (
                 <p className="flex items-center gap-2 truncate">
                   <EnvelopeIcon className={`${iconSize} shrink-0`} />
@@ -123,7 +133,6 @@ export default function TemplateCreativeIsabel({ resumeData: d, large = false })
           )}
         </div>
 
-        {/* RIGHT */}
         <div className={space}>
           {d.education?.[0]?.degree && (
             <div>
@@ -176,6 +185,24 @@ export default function TemplateCreativeIsabel({ resumeData: d, large = false })
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {hasProjects(d) && (
+            <div>
+              <SectionHead Icon={CodeBracketIcon} label="Projects" />
+              <ProjectList
+                items={d.projects}
+                textSize={textSize}
+                smallSize={smallSize}
+              />
+            </div>
+          )}
+
+          {hasCerts(d) && (
+            <div>
+              <SectionHead Icon={ShieldCheckIcon} label="Certifications" />
+              <CertList items={d.certifications} smallSize={smallSize} />
             </div>
           )}
         </div>
