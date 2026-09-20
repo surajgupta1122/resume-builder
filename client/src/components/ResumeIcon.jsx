@@ -6,7 +6,6 @@ export default function ResumeIcon({
   plain = false,
   className = "",
 }) {
-  // Determine the gradient colors based on the theme prop
   const gradientClass =
     theme === "green"
       ? "from-green-100 to-emerald-200"
@@ -14,18 +13,39 @@ export default function ResumeIcon({
 
   return (
     <div
-      className={`relative group mx-4 ${className}`}
+      className={`relative mx-4 resume-wrapper cursor-pointer ${className}`}
       style={{ width: size * 0.6, height: size * 0.7 }}
     >
-      {/* 1. Tilted Background Shadow Box — hidden when plain */}
+      {/* 
+        This raw CSS block guarantees smooth transitions 
+        by completely bypassing Tailwind JIT purging 
+      */}
+      <style>{`
+        .resume-wrapper:hover .animated-bg {
+          transform: rotate(0deg) !important;
+        }
+        .resume-wrapper:hover .animated-fg {
+          transform: scale(1.05) !important;
+        }
+        .animated-bg, .animated-fg {
+          transition: transform 0.5s ease-in-out !important;
+          will-change: transform;
+        }
+      `}</style>
+
+      {/* 1. Tilted Background Shadow Box */}
       {!plain && (
         <div
-          className={`absolute -inset-2 bg-gradient-to-tr ${gradientClass} rounded-2xl -rotate-3 group-hover:rotate-0 transition-all duration-500 shadow-xl`}
+          className={`absolute -inset-2 bg-gradient-to-tr ${gradientClass} rounded-2xl shadow-xl animated-bg`}
+          style={{ transform: "rotate(-3deg)" }}
         ></div>
       )}
 
       {/* 2. Main Document Box */}
-      <div className="relative w-full h-full transition-transform duration-700 group-hover:scale-105 rounded-2xl bg-gray-50 shadow-2xl overflow-hidden">
+      <div
+        className="relative w-full h-full rounded-2xl bg-gray-50 shadow-2xl overflow-hidden animated-fg"
+        style={{ transform: "scale(1)" }}
+      >
         <svg viewBox="8 8 75 85" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Profile Avatar */}
           <rect x="18" y="15" width="20" height="20" rx="3" fill="#E5E7EB" />

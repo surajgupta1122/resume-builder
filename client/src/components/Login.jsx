@@ -40,35 +40,45 @@ export default function Login({ setUser, setPage }) {
 
   return (
     <div className="flex min-h-screen">
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-12 pt-12 border-r-2 border-blue-200 rounded-r-3xl">
+      {/* Left Side — Branding (desktop only) */}
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-blue-200 rounded-r-3xl">
         <ResumeIcon size={180} />
         <div className="max-w-md text-center mt-6">
-          <h1 className="text-5xl font-extrabold text-blue-900 mb-4">
+          <h1 className="text-3xl lg:text-5xl font-extrabold text-blue-900 mb-3 lg:mb-4">
             Resume Builder
           </h1>
-          <p className="text-lg text-gray-700 mb-8">
+          <p className="text-base lg:text-lg text-gray-700 mb-6 lg:mb-8">
             Create a professional resume that stands out and lands you the job.
           </p>
           <img
             src={resumeIllustration}
             alt="Resume Illustration"
-            className="w-72 h-72 mx-auto drop-shadow-lg"
+            className="w-48 lg:w-72 h-48 lg:h-72 mx-auto drop-shadow-lg"
           />
         </div>
       </div>
 
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-white">
-        <div className="w-full max-w-xl p-12 bg-white rounded-3xl">
-          <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">
+      {/* Right Side — Login Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 bg-white">
+        <div className="w-full max-w-md md:max-w-xl px-2 py-6 md:p-12 bg-white rounded-3xl">
+          {/* Mobile brand header (only on small screens) */}
+          <div className="md:hidden flex flex-col items-center mb-6">
+            <ResumeIcon size={100} />
+            <h1 className="text-2xl font-extrabold text-blue-900 mt-3">
+              Resume Builder
+            </h1>
+          </div>
+
+          <h2 className="text-xl md:text-3xl font-bold text-gray-800 mb-6 md:mb-12 text-center">
             Log into Resume Builder
           </h2>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4 md:space-y-5">
             <div>
               <input
                 type="email"
                 required
-                className="w-full px-4 py-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 text-sm md:text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -79,7 +89,7 @@ export default function Login({ setUser, setPage }) {
               <input
                 type="password"
                 required
-                className="w-full px-4 py-3 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+                className="w-full px-4 py-3 text-sm md:text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -89,19 +99,19 @@ export default function Login({ setUser, setPage }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-200 disabled:opacity-50"
+              className="w-full bg-blue-600 text-white py-3 rounded-full font-semibold hover:bg-blue-700 transition duration-200 disabled:opacity-50 text-sm md:text-base"
             >
               {loading ? "Logging in..." : "Log In"}
             </button>
           </form>
 
-          <div className="flex items-center my-6">
+          <div className="flex items-center my-5 md:my-6">
             <div className="flex-grow border-t border-gray-300"></div>
-            <span className="px-4 text-sm text-gray-500">OR</span>
+            <span className="px-4 text-xs md:text-sm text-gray-500">OR</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
-          <p className="text-center text-sm text-gray-600">
+          <p className="text-center text-xs md:text-sm text-gray-600">
             Don't have an account?{" "}
             <button
               type="button"
