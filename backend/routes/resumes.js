@@ -9,15 +9,30 @@ const serverError = (res, err) => {
   res.status(500).json({ message: "Server error" });
 };
 
-// SAVE RESUME
+// SAVE RESUME (new)
 router.post("/resume", auth, (req, res) => {
   const { title, content, template_id } = req.body;
   const sql =
     "INSERT INTO resumes (user_id, title, content, template_id) VALUES (?, ?, ?, ?)";
-  db.query(sql, [req.user.id, title, content, template_id], (err) => {
+  db.query(sql, [req.user.id, title, content, template_id], (err, result) => {
     if (err) return serverError(res, err);
-    res.json({ message: "Resume saved" });
+    res.json({ message: "Resume saved", resume_id: result.insertId });
   });
+});
+
+// UPDATE MY RESUME (only if it belongs to the logged-in user)
+router.put("/resume/:id", auth, (req, res) => {
+  const { title, content, template_id } = req.body;
+  db.query(
+    "UPDATE resumes SET title = ?, content = ?, template_id = ? WHERE resume_id = ? AND user_id = ?",
+    [title, content, template_id, req.params.id, req.user.id],
+    (err, result) => {
+      if (err) return serverError(res, err);
+      if (result.affectedRows === 0)
+        return res.status(404).json({ message: "Resume not found" });
+      res.json({ message: "Resume updated", resume_id: Number(req.params.id) });
+    }
+  );
 });
 
 // GET MY RESUMES

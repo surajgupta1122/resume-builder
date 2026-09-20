@@ -14,6 +14,7 @@ import {
   LanguageIcon,
 } from "@heroicons/react/24/outline";
 import LivePreview from "./LivePreview";
+import { validateResume } from "../validators";
 
 export default function ResumeForm({
   resumeData,
@@ -24,9 +25,29 @@ export default function ResumeForm({
 }) {
   const [skillInput, setSkillInput] = useState("");
   const [langInput, setLangInput] = useState("");
+  const [errors, setErrors] = useState({});
 
   const update = (field, value) => {
     setResumeData({ ...resumeData, [field]: value });
+    // clear the red error of this field as soon as the user edits it
+    if (errors[field]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[field];
+        return next;
+      });
+    }
+  };
+
+  // Check the required fields before leaving the form
+  const goTo = (nextPage) => {
+    const found = validateResume(resumeData);
+    if (Object.keys(found).length > 0) {
+      setErrors(found);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    setPage(nextPage);
   };
 
   const addSkill = (e) => {
@@ -119,7 +140,6 @@ export default function ResumeForm({
 
   return (
     <div className="p-6 max-w-[1400px] mx-auto">
-      {/* Stepper */}
       <div className="flex items-start justify-between mb-8 gap-6 flex-wrap">
         <div className="flex items-center gap-4">
           {[
@@ -168,33 +188,33 @@ export default function ResumeForm({
             badge="Step 1 of 3"
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Field label="Full Name" required>
+              <Field label="Full Name" required error={errors.name}>
                 <input
-                  className={inputClass}
+                  className={inputStyle(errors.name)}
                   value={resumeData.name}
                   onChange={(e) => update("name", e.target.value)}
                   placeholder="Suraj Gupta"
                 />
               </Field>
-              <Field label="Email" required>
+              <Field label="Email" required error={errors.email}>
                 <input
-                  className={inputClass}
+                  className={inputStyle(errors.email)}
                   value={resumeData.email}
                   onChange={(e) => update("email", e.target.value)}
                   placeholder="suraj@example.com"
                 />
               </Field>
-              <Field label="Phone" required>
+              <Field label="Phone" required error={errors.phone}>
                 <input
-                  className={inputClass}
+                  className={inputStyle(errors.phone)}
                   value={resumeData.phone}
                   onChange={(e) => update("phone", e.target.value)}
                   placeholder="+91 98765 43210"
                 />
               </Field>
-              <Field label="Location" required>
+              <Field label="Location" required error={errors.location}>
                 <input
-                  className={inputClass}
+                  className={inputStyle(errors.location)}
                   value={resumeData.location}
                   onChange={(e) => update("location", e.target.value)}
                   placeholder="Delhi, India"
@@ -608,14 +628,14 @@ export default function ResumeForm({
 
           <div className="flex gap-4 pt-2">
             <button
-              onClick={() => setPage("preview")}
+              onClick={() => goTo("preview")}
               className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2"
             >
               <EyeIcon className="w-5 h-5" />
               Skip to Preview
             </button>
             <button
-              onClick={() => setPage("template")}
+              onClick={() => goTo("template")}
               className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 shadow-md transition flex items-center justify-center gap-2"
             >
               Next: Choose Template
@@ -641,13 +661,18 @@ export default function ResumeForm({
 const inputClass =
   "w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white";
 
-function Field({ label, required, children }) {
+// red border when the field has an error
+const inputStyle = (error) =>
+  error ? inputClass.replace("border-gray-300", "border-red-500") : inputClass;
+
+function Field({ label, required, error, children }) {
   return (
     <div>
       <label className="block text-xs font-semibold text-gray-700 mb-1">
         {label} {required && <span className="text-red-500">*</span>}
       </label>
       {children}
+      {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
     </div>
   );
 }

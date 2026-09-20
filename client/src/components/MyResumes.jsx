@@ -7,7 +7,12 @@ import {
 } from "@heroicons/react/24/outline";
 import { authFetch } from "../api";
 
-export default function MyResumes({ setPage, setResumeData }) {
+export default function MyResumes({
+  setPage,
+  setResumeData,
+  setTemplate,
+  onCreateNew,
+}) {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +39,9 @@ export default function MyResumes({ setPage, setResumeData }) {
   const handleOpen = (resume) => {
     try {
       const parsed = JSON.parse(resume.content);
-      setResumeData(parsed);
+      // resume_id makes the next Save UPDATE this resume instead of creating a copy
+      setResumeData({ ...parsed, resume_id: resume.resume_id });
+      setTemplate(resume.template_id || "minimal-mark");
       setPage("preview");
     } catch {
       alert("Cannot open this resume.");
@@ -49,6 +56,10 @@ export default function MyResumes({ setPage, setResumeData }) {
       });
       if (!res.ok) return alert("Cannot delete this resume.");
       setResumes(resumes.filter((r) => r.resume_id !== id));
+      // if the deleted resume is the one open in the editor, forget its id
+      setResumeData((prev) =>
+        prev.resume_id === id ? { ...prev, resume_id: null } : prev
+      );
     } catch {
       alert("Cannot delete. Is backend running?");
     }
@@ -64,7 +75,7 @@ export default function MyResumes({ setPage, setResumeData }) {
           </p>
         </div>
         <button
-          onClick={() => setPage("form")}
+          onClick={onCreateNew}
           className="bg-blue-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center gap-2"
         >
           <PlusIcon className="w-5 h-5" />
@@ -86,7 +97,7 @@ export default function MyResumes({ setPage, setResumeData }) {
             Create your first resume to see it here.
           </p>
           <button
-            onClick={() => setPage("form")}
+            onClick={onCreateNew}
             className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition inline-flex items-center gap-2"
           >
             <PlusIcon className="w-5 h-5" />

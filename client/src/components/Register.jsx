@@ -1,6 +1,7 @@
 import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
+import { isValidEmail } from "../validators";
 
 export default function Register({ setPage }) {
   const [name, setName] = useState("");
@@ -14,6 +15,18 @@ export default function Register({ setPage }) {
       alert("Please fill in all fields.");
       return;
     }
+    if (name.trim().length < 2) {
+      alert("Name must be at least 2 characters.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -23,14 +36,14 @@ export default function Register({ setPage }) {
         body: JSON.stringify({ name, email, password }),
       });
       const data = await res.json();
-      
+
       if (res.ok) {
         alert("Registration successful! Please log in.");
         setPage("login");
       } else {
         alert(data.message || "Registration failed.");
       }
-    } catch (error) {
+    } catch {
       alert("Server not reachable. Make sure the backend is running.");
     } finally {
       setLoading(false);
@@ -39,7 +52,6 @@ export default function Register({ setPage }) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Side - Branding (Green Theme) */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-50 to-emerald-100 flex-col justify-center items-center px-12 pt-12 border-r-2 border-green-200 rounded-r-3xl">
         <ResumeIcon size={180} theme="green" />
         <div className="max-w-md text-center mt-6">
@@ -47,7 +59,8 @@ export default function Register({ setPage }) {
             Join Us
           </h1>
           <p className="text-lg text-gray-700 mb-8">
-            Start building your professional future today. It only takes a minute.
+            Start building your professional future today. It only takes a
+            minute.
           </p>
           <img
             src={resumeIllustration}
@@ -57,7 +70,6 @@ export default function Register({ setPage }) {
         </div>
       </div>
 
-      {/* Right Side - Register Form (Green Theme) */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 bg-white">
         <div className="w-full max-w-xl p-12 bg-white rounded-3xl">
           <h2 className="text-3xl font-bold text-gray-800 mb-12 text-center">

@@ -80,6 +80,13 @@ function App() {
     setPage(loggedInUser.role === "admin" ? "admin" : "form");
   };
 
+  // "Create New" from My Resumes: blank form, next Save creates a new resume
+  const startNewResume = () => {
+    setResumeData(emptyResume);
+    setTemplate("minimal-mark");
+    setPage("form");
+  };
+
   if (page === "login" || page === "register") {
     return (
       <div className="min-h-screen bg-white">
@@ -101,7 +108,12 @@ function App() {
         <main className="flex-1 min-w-0">
           {page === "admin" && <Admin setPage={setPage} />}
           {page === "resumes" && (
-            <MyResumes setPage={setPage} setResumeData={setResumeData} />
+            <MyResumes
+              setPage={setPage}
+              setResumeData={setResumeData}
+              setTemplate={setTemplate}
+              onCreateNew={startNewResume}
+            />
           )}
           {page === "form" && (
             <ResumeForm
@@ -123,6 +135,7 @@ function App() {
           {page === "preview" && (
             <Preview
               resumeData={resumeData}
+              setResumeData={setResumeData}
               template={template}
               setTemplate={setTemplate}
               setPage={setPage}

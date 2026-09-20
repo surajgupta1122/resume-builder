@@ -13,6 +13,7 @@ import { authFetch } from "../api";
 
 export default function Preview({
   resumeData,
+  setResumeData,
   template,
   setTemplate,
   setPage,
@@ -67,9 +68,15 @@ export default function Preview({
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return alert("Please login first");
 
+    // Already saved before? Then update it, otherwise create a new one
+    const isUpdate = !!d.resume_id;
+    const url = isUpdate
+      ? `http://localhost:5000/api/resume/${d.resume_id}`
+      : "http://localhost:5000/api/resume";
+
     try {
-      const res = await authFetch("http://localhost:5000/api/resume", {
-        method: "POST",
+      const res = await authFetch(url, {
+        method: isUpdate ? "PUT" : "POST",
         body: JSON.stringify({
           title: (d.name || "My") + "'s Resume",
           content: JSON.stringify(d),
@@ -78,6 +85,10 @@ export default function Preview({
       });
       const data = await res.json();
       alert(data.message);
+
+      // remember the id, so the next Save updates this same resume
+      if (res.ok && data.resume_id)
+        setResumeData({ ...d, resume_id: data.resume_id });
     } catch {
       alert("Server not reachable");
     }

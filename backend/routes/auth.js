@@ -11,16 +11,30 @@ const serverError = (res, err) => {
   res.status(500).json({ message: "Server error" });
 };
 
+// non-empty string check (stops numbers/objects sent by hand from crashing bcrypt)
+const isText = (v) => typeof v === "string" && v.trim() !== "";
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // REGISTER
 router.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
-  if (!name || !email || !password)
+  const { name, email, password } = req.body ?? {};
+  if (![name, email, password].every(isText))
     return res.status(400).json({ message: "All fields required" });
+  if (name.trim().length < 2)
+    return res
+      .status(400)
+      .json({ message: "Name must be at least 2 characters" });
+  if (!emailRegex.test(email.trim()))
+    return res.status(400).json({ message: "Enter a valid email address" });
+  if (password.length < 6)
+    return res
+      .status(400)
+      .json({ message: "Password must be at least 6 characters" });
 
   const hashed = await bcrypt.hash(password, 10);
   const sql =
     "INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')";
-  db.query(sql, [name, email, hashed], (err) => {
+  db.query(sql, [name.trim(), email.trim(), hashed], (err) => {
     if (err) {
       if (err.code === "ER_DUP_ENTRY")
         return res.status(409).json({ message: "Email already registered" });
@@ -32,8 +46,8 @@ router.post("/register", async (req, res) => {
 
 // LOGIN
 router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password)
+  const { email, password } = req.body ?? {};
+  if (!isText(email) || !isText(password))
     return res.status(400).json({ message: "Email and password required" });
 
   db.query(
