@@ -30,7 +30,7 @@ export default function Login({ setUser, setPage }) {
       } else {
         alert(data.message || "Invalid email or password.");
       }
-    } catch (error) {
+    } catch {
       alert("Server not reachable. Make sure the backend is running.");
     } finally {
       setLoading(false);
