@@ -2,6 +2,11 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
+if (!process.env.JWT_SECRET) {
+  console.error("JWT_SECRET is missing in .env file");
+  process.exit(1);
+}
+
 const authRoutes = require("./routes/auth");
 const resumeRoutes = require("./routes/resumes");
 const adminRoutes = require("./routes/admin");
@@ -15,7 +20,6 @@ app.use(
 );
 app.use(express.json());
 
-// Routes
 app.use("/api", authRoutes);
 app.use("/api", resumeRoutes);
 app.use("/api/admin", adminRoutes);

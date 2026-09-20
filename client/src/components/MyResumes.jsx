@@ -5,6 +5,7 @@ import {
   TrashIcon,
   FolderOpenIcon,
 } from "@heroicons/react/24/outline";
+import { authFetch } from "../api";
 
 export default function MyResumes({ setPage, setResumeData }) {
   const [resumes, setResumes] = useState([]);
@@ -14,10 +15,10 @@ export default function MyResumes({ setPage, setResumeData }) {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return setPage("login");
 
-    fetch(`http://localhost:5000/api/resumes/${user.id}`)
+    authFetch(`http://localhost:5000/api/resumes/${user.id}`)
       .then((r) => r.json())
       .then((data) => {
-        setResumes(data);
+        setResumes(Array.isArray(data) ? data : []);
         setLoading(false);
       })
       .catch(() => {
@@ -43,9 +44,10 @@ export default function MyResumes({ setPage, setResumeData }) {
   const handleDelete = async (id) => {
     if (!confirm("Delete this resume?")) return;
     try {
-      await fetch(`http://localhost:5000/api/resume/${id}`, {
+      const res = await authFetch(`http://localhost:5000/api/resume/${id}`, {
         method: "DELETE",
       });
+      if (!res.ok) return alert("Cannot delete this resume.");
       setResumes(resumes.filter((r) => r.resume_id !== id));
     } catch {
       alert("Cannot delete. Is backend running?");
