@@ -10,6 +10,8 @@ import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import LivePreview from "./LivePreview";
 import { authFetch } from "../api";
+import { useUI } from "../context/UIContext";
+import { validateResume } from "../validators";
 
 export default function Preview({
   resumeData,
@@ -18,40 +20,46 @@ export default function Preview({
   setTemplate,
   setPage,
 }) {
+  const { toast } = useUI();
   const d = resumeData;
 
   const downloadPDF = async () => {
-    const el = document.getElementById("resume-capture");
-    if (!el) return alert("Resume preview not found");
+    try {
+      const el = document.getElementById("resume-capture");
+      if (!el) return toast("Resume preview not found", "error");
 
-    const canvas = await html2canvas(el, {
-      scale: 2,
-      backgroundColor: "#ffffff",
-      onclone: (doc) => {
-        const clone = doc.getElementById("resume-capture");
-        clone.style.borderRadius = "0";
-        clone.style.boxShadow = "none";
-      },
-    });
+      const canvas = await html2canvas(el, {
+        scale: 2,
+        backgroundColor: "#ffffff",
+        onclone: (doc) => {
+          const clone = doc.getElementById("resume-capture");
+          clone.style.borderRadius = "0";
+          clone.style.boxShadow = "none";
+        },
+      });
 
-    const imgData = canvas.toDataURL("image/jpeg", 0.95);
-    const pdf = new jsPDF("p", "mm", "a4");
-    const pageW = pdf.internal.pageSize.getWidth();
-    const pageH = pdf.internal.pageSize.getHeight();
-    const imgH = (canvas.height * pageW) / canvas.width;
+      const imgData = canvas.toDataURL("image/jpeg", 0.95);
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageW = pdf.internal.pageSize.getWidth();
+      const pageH = pdf.internal.pageSize.getHeight();
+      const imgH = (canvas.height * pageW) / canvas.width;
 
-    let heightLeft = imgH;
-    let position = 0;
-    pdf.addImage(imgData, "JPEG", 0, position, pageW, imgH);
-    heightLeft -= pageH;
-    while (heightLeft > 0) {
-      position -= pageH;
-      pdf.addPage();
+      let heightLeft = imgH;
+      let position = 0;
       pdf.addImage(imgData, "JPEG", 0, position, pageW, imgH);
       heightLeft -= pageH;
-    }
+      while (heightLeft > 0) {
+        position -= pageH;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, pageW, imgH);
+        heightLeft -= pageH;
+      }
 
-    pdf.save(`${d.name || "resume"}.pdf`);
+      pdf.save(`${d.name || "resume"}.pdf`);
+      toast("PDF downloaded", "success");
+    } catch {
+      toast("Could not create PDF", "error");
+    }
   };
 
   const printPDF = () => {
@@ -66,9 +74,15 @@ export default function Preview({
 
   const saveToDB = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return alert("Please login first");
+    if (!user) return toast("Please login first", "error");
 
-    // Already saved before? Then update it, otherwise create a new one
+    // Block saving empty / invalid resumes
+    const errors = validateResume(d);
+    if (Object.keys(errors).length > 0) {
+      const firstError = Object.values(errors)[0];
+      return toast(`${firstError}. Go back and fill the form.`, "error");
+    }
+
     const isUpdate = !!d.resume_id;
     const url = isUpdate
       ? `http://localhost:5000/api/resume/${d.resume_id}`
@@ -84,13 +98,16 @@ export default function Preview({
         }),
       });
       const data = await res.json();
-      alert(data.message);
 
-      // remember the id, so the next Save updates this same resume
-      if (res.ok && data.resume_id)
-        setResumeData({ ...d, resume_id: data.resume_id });
+      if (res.ok) {
+        toast(isUpdate ? "Resume updated" : "Resume saved", "success");
+        if (data.resume_id)
+          setResumeData({ ...d, resume_id: data.resume_id });
+      } else {
+        toast(data.message || "Save failed", "error");
+      }
     } catch {
-      alert("Server not reachable");
+      toast("Server not reachable", "error");
     }
   };
 

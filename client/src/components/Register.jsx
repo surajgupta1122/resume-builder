@@ -2,8 +2,10 @@ import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
 import { isValidEmail } from "../validators";
+import { useUI } from "../context/UIContext";
 
 export default function Register({ setPage }) {
+  const { toast } = useUI();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,19 +14,19 @@ export default function Register({ setPage }) {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) {
-      alert("Please fill in all fields.");
+      toast("Please fill in all fields", "error");
       return;
     }
     if (name.trim().length < 2) {
-      alert("Name must be at least 2 characters.");
+      toast("Name must be at least 2 characters", "error");
       return;
     }
     if (!isValidEmail(email)) {
-      alert("Please enter a valid email address.");
+      toast("Please enter a valid email address", "error");
       return;
     }
     if (password.length < 6) {
-      alert("Password must be at least 6 characters.");
+      toast("Password must be at least 6 characters", "error");
       return;
     }
 
@@ -38,13 +40,13 @@ export default function Register({ setPage }) {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Registration successful! Please log in.");
+        toast("Registration successful! Please log in.", "success");
         setPage("login");
       } else {
-        alert(data.message || "Registration failed.");
+        toast(data.message || "Registration failed", "error");
       }
     } catch {
-      alert("Server not reachable. Make sure the backend is running.");
+      toast("Server not reachable. Is backend running?", "error");
     } finally {
       setLoading(false);
     }

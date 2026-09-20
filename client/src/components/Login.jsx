@@ -1,8 +1,10 @@
 import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
+import { useUI } from "../context/UIContext";
 
 export default function Login({ setUser, setPage }) {
+  const { toast } = useUI();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -10,7 +12,7 @@ export default function Login({ setUser, setPage }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      alert("Please fill in all fields.");
+      toast("Please fill in all fields", "error");
       return;
     }
 
@@ -28,10 +30,10 @@ export default function Login({ setUser, setPage }) {
         localStorage.setItem("token", data.token);
         setUser(data.user);
       } else {
-        alert(data.message || "Invalid email or password.");
+        toast(data.message || "Invalid email or password", "error");
       }
     } catch {
-      alert("Server not reachable. Make sure the backend is running.");
+      toast("Server not reachable. Is backend running?", "error");
     } finally {
       setLoading(false);
     }

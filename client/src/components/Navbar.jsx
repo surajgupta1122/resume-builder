@@ -1,8 +1,21 @@
 import { QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import ResumeIcon from "./ResumeIcon";
+import { useUI } from "../context/UIContext";
 
 export default function Navbar({ user, onLogout, setPage }) {
+  const { confirm } = useUI();
   const isAdmin = user && user.role === "admin";
+
+  const handleLogoutClick = async () => {
+    const ok = await confirm({
+      title: "Log out?",
+      message: "You will need to log in again to access your resumes.",
+      confirmText: "Logout",
+      cancelText: "Stay",
+      variant: "danger",
+    });
+    if (ok) onLogout();
+  };
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-20">
@@ -32,7 +45,7 @@ export default function Navbar({ user, onLogout, setPage }) {
         </div>
 
         <button
-          onClick={onLogout}
+          onClick={handleLogoutClick}
           className="bg-red-500 text-white text-sm font-semibold px-4 py-2 rounded-lg hover:bg-red-600 transition"
         >
           Logout

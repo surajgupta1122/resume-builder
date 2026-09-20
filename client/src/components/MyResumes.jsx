@@ -6,6 +6,7 @@ import {
   FolderOpenIcon,
 } from "@heroicons/react/24/outline";
 import { authFetch } from "../api";
+import { useUI } from "../context/UIContext";
 
 export default function MyResumes({
   setPage,
@@ -13,6 +14,7 @@ export default function MyResumes({
   setTemplate,
   onCreateNew,
 }) {
+  const { toast, confirm } = useUI();
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -27,7 +29,7 @@ export default function MyResumes({
         setLoading(false);
       })
       .catch(() => {
-        alert("Cannot load resumes. Is backend running?");
+        toast("Cannot load resumes. Is backend running?", "error");
         setLoading(false);
       });
   };
@@ -39,29 +41,36 @@ export default function MyResumes({
   const handleOpen = (resume) => {
     try {
       const parsed = JSON.parse(resume.content);
-      // resume_id makes the next Save UPDATE this resume instead of creating a copy
       setResumeData({ ...parsed, resume_id: resume.resume_id });
       setTemplate(resume.template_id || "minimal-mark");
       setPage("preview");
     } catch {
-      alert("Cannot open this resume.");
+      toast("Cannot open this resume", "error");
     }
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this resume?")) return;
+    const ok = await confirm({
+      title: "Delete this resume?",
+      message: "This action cannot be undone.",
+      confirmText: "Delete",
+      cancelText: "Cancel",
+      variant: "danger",
+    });
+    if (!ok) return;
+
     try {
       const res = await authFetch(`http://localhost:5000/api/resume/${id}`, {
         method: "DELETE",
       });
-      if (!res.ok) return alert("Cannot delete this resume.");
+      if (!res.ok) return toast("Cannot delete this resume", "error");
       setResumes(resumes.filter((r) => r.resume_id !== id));
-      // if the deleted resume is the one open in the editor, forget its id
       setResumeData((prev) =>
         prev.resume_id === id ? { ...prev, resume_id: null } : prev
       );
+      toast("Resume deleted", "success");
     } catch {
-      alert("Cannot delete. Is backend running?");
+      toast("Cannot delete. Is backend running?", "error");
     }
   };
 

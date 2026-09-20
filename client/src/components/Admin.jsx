@@ -8,9 +8,11 @@ import {
   CheckIcon,
 } from "@heroicons/react/24/outline";
 import { templateList } from "./templates/templateList";
+import { useUI } from "../context/UIContext";
 import { authFetch } from "../api";
 
 export default function Admin({ setPage }) {
+  const { toast } = useUI();
   const [users, setUsers] = useState([]);
   const [resumes, setResumes] = useState([]);
   const [usage, setUsage] = useState([]);
@@ -37,12 +39,15 @@ export default function Admin({ setPage }) {
         setUsage(Array.isArray(t) ? t : []);
         setActivity(Array.isArray(a) ? a : []);
       })
-      .catch(() => alert("Cannot load admin data. Is backend running?"))
+      .catch(() =>
+        toast("Cannot load admin data. Is backend running?", "error")
+      )
       .finally(() => setLoading(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const exportCSV = (rows, filename) => {
-    if (!rows.length) return alert("No data to export");
+    if (!rows.length) return toast("No data to export", "error");
 
     const headers = Object.keys(rows[0]);
     const csv = [
@@ -64,6 +69,8 @@ export default function Admin({ setPage }) {
     link.download = `${filename}_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     URL.revokeObjectURL(url);
+
+    toast(`${filename} exported`, "success");
   };
 
   const tabs = [
