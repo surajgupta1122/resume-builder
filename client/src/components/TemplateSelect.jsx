@@ -63,18 +63,18 @@ export default function TemplateSelect({
       : "Click any template to zoom and choose it.";
 
   return (
-    <div className="p-6 max-w-[1600px] mx-auto">
+    <div className="p-3 md:p-6 max-w-[1600px] mx-auto">
       {/* Stepper */}
-      <div className="flex items-center justify-center gap-4 mb-8">
+      <div className="flex items-center justify-center gap-2 md:gap-4 mb-5 md:mb-8">
         {[
           { n: 1, label: "Your Details", done: true },
           { n: 2, label: "Choose Template", active: true },
           { n: 3, label: "Preview & Download" },
         ].map((s, i) => (
-          <div key={s.n} className="flex items-center gap-3">
-            <div className="flex flex-col items-center">
+          <div key={s.n} className="flex items-center gap-2 md:gap-3">
+            <div className="flex flex-col items-center shrink-0">
               <div
-                className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${
+                className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center font-bold text-xs md:text-sm ${
                   s.active
                     ? "bg-blue-600 text-white"
                     : s.done
@@ -82,88 +82,102 @@ export default function TemplateSelect({
                     : "bg-white border-2 border-gray-300 text-gray-500"
                 }`}
               >
-                {s.done && !s.active ? <CheckIcon className="w-4 h-4" /> : s.n}
+                {s.done && !s.active ? (
+                  <CheckIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                ) : (
+                  s.n
+                )}
               </div>
               <span
-                className={`text-xs mt-1 font-medium ${
+                className={`text-[10px] md:text-xs mt-1 font-medium whitespace-nowrap ${
                   s.active ? "text-blue-700" : "text-gray-500"
                 }`}
               >
                 {s.label}
               </span>
             </div>
-            {i < 2 && <div className="w-16 h-px bg-gray-300 mb-5"></div>}
+            {i < 2 && (
+              <div className="w-6 md:w-16 h-px bg-gray-300 mb-4 md:mb-5"></div>
+            )}
           </div>
         ))}
       </div>
 
       {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="text-center mb-5 md:mb-8">
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900 mb-1 md:mb-2">
           {headerTitle}
         </h1>
-        <p className="text-gray-600">{headerSubtitle}</p>
+        <p className="text-xs md:text-base text-gray-600 px-4">
+          {headerSubtitle}
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
         {/* LEFT: Category cards */}
-        <div className="lg:col-span-2 space-y-3">
-          {categories.map((c) => {
-            const isActive = filter === c.id;
-            const { Icon, bg, color } = categoryIcons[c.id] || {};
-            const count =
-              c.id === "all"
-                ? templates.length
-                : templates.filter((t) => t.category === c.id).length;
+        <div className="lg:col-span-2">
+          <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 md:gap-3">
+            {categories.map((c) => {
+              const isActive = filter === c.id;
+              const { Icon, bg, color } = categoryIcons[c.id] || {};
+              const count =
+                c.id === "all"
+                  ? templates.length
+                  : templates.filter((t) => t.category === c.id).length;
 
-            return (
-              <div
-                key={c.id}
-                onClick={() => setFilter(c.id)}
-                className={`bg-white rounded-2xl border-2 p-4 cursor-pointer transition-all hover:shadow-md flex items-center gap-4 ${
-                  isActive
-                    ? "border-blue-600 shadow-lg ring-2 ring-blue-100"
-                    : "border-gray-200"
-                }`}
-              >
+              return (
                 <div
-                  className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${bg}`}
+                  key={c.id}
+                  onClick={() => setFilter(c.id)}
+                  className={`bg-white rounded-2xl border-2 p-2.5 md:p-4 cursor-pointer transition-all hover:shadow-md flex items-center gap-2 md:gap-4 ${
+                    isActive
+                      ? "border-blue-600 shadow-lg ring-2 ring-blue-100"
+                      : "border-gray-200"
+                  }`}
                 >
-                  <Icon className={`w-6 h-6 ${color}`} />
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <h3 className="font-bold text-gray-900 text-sm">
-                    {c.label}
-                  </h3>
-                  <p className="text-xs text-gray-500 mt-0.5">{c.desc}</p>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0">
-                  <span
-                    className={`text-xs font-semibold px-2 py-0.5 rounded ${
-                      isActive
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-gray-100 text-gray-500"
-                    }`}
+                  <div
+                    className={`w-9 h-9 md:w-12 md:h-12 rounded-xl flex items-center justify-center shrink-0 ${bg}`}
                   >
-                    {count}
-                  </span>
-                  <ArrowRightIcon className="w-4 h-4 text-gray-400" />
+                    <Icon className={`w-4 h-4 md:w-6 md:h-6 ${color}`} />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-gray-900 text-xs md:text-sm truncate">
+                      {c.label}
+                    </h3>
+                    <p className="hidden md:block text-xs text-gray-500 mt-0.5 truncate">
+                      {c.desc}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+                    <span
+                      className={`text-[10px] md:text-xs font-semibold px-1.5 md:px-2 py-0.5 rounded ${
+                        isActive
+                          ? "bg-blue-100 text-blue-700"
+                          : "bg-gray-100 text-gray-500"
+                      }`}
+                    >
+                      {count}
+                    </span>
+                    <ArrowRightIcon className="hidden md:block w-4 h-4 text-gray-400" />
+                  </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
 
         {/* RIGHT: Gallery grid */}
         <div className="lg:col-span-3">
           {filtered.length === 0 ? (
-            <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center">
-              <p className="text-gray-500">No templates in this category.</p>
+            <div className="bg-white rounded-2xl border border-gray-200 p-10 md:p-16 text-center">
+              <p className="text-sm md:text-base text-gray-500">
+                No templates in this category.
+              </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-2 gap-3 md:gap-5">
               {filtered.map((t) => {
                 const isSelected = template === t.id;
                 const Comp = t.Component;
@@ -191,23 +205,23 @@ export default function TemplateSelect({
                       </div>
 
                       {isSelected && (
-                        <div className="absolute top-2 right-2 w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center shadow-md z-10">
-                          <CheckIcon className="w-4 h-4 text-white" />
+                        <div className="absolute top-2 right-2 w-6 h-6 md:w-7 md:h-7 bg-blue-600 rounded-full flex items-center justify-center shadow-md z-10">
+                          <CheckIcon className="w-3.5 h-3.5 md:w-4 md:h-4 text-white" />
                         </div>
                       )}
 
-                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center z-10">
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition hidden md:flex items-center justify-center z-10">
                         <span className="opacity-0 group-hover:opacity-100 bg-white text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-full shadow transition">
                           Click to zoom
                         </span>
                       </div>
                     </div>
 
-                    <div className="p-3 border-t border-gray-100">
-                      <h3 className="font-bold text-gray-900 text-sm truncate">
+                    <div className="p-2.5 md:p-3 border-t border-gray-100">
+                      <h3 className="font-bold text-gray-900 text-xs md:text-sm truncate">
                         {t.name}
                       </h3>
-                      <p className="text-xs text-gray-500 mt-0.5">
+                      <p className="text-[10px] md:text-xs text-gray-500 mt-0.5 truncate">
                         {t.categoryLabel}
                       </p>
                     </div>
@@ -220,17 +234,17 @@ export default function TemplateSelect({
       </div>
 
       {/* Bottom buttons */}
-      <div className="flex gap-4 mt-8">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-6 md:mt-8">
         <button
           onClick={() => setPage("form")}
-          className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2"
+          className="w-full sm:flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2 text-sm md:text-base"
         >
           <ArrowLeftIcon className="w-5 h-5" />
           Back to Form
         </button>
         <button
           onClick={() => setPage("preview")}
-          className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 shadow-md transition flex items-center justify-center gap-2"
+          className="w-full sm:flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 shadow-md transition flex items-center justify-center gap-2 text-sm md:text-base"
         >
           Next: Preview & Download
           <ArrowRightIcon className="w-5 h-5" />
@@ -240,49 +254,49 @@ export default function TemplateSelect({
       {/* Zoom Modal */}
       {zoomId && zoomedTemplate && (
         <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4"
+          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-2 md:p-4"
           onClick={() => setZoomId(null)}
         >
           <div
             className="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between p-4 border-b border-gray-200 shrink-0">
+            <div className="flex items-center justify-between p-3 md:p-4 border-b border-gray-200 shrink-0">
               <button
                 onClick={() => setZoomId(null)}
-                className="flex items-center gap-2 text-gray-700 hover:text-gray-900 font-medium text-sm"
+                className="flex items-center gap-1.5 md:gap-2 text-gray-700 hover:text-gray-900 font-medium text-xs md:text-sm"
               >
-                <ArrowLeftIcon className="w-5 h-5" />
+                <ArrowLeftIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Back
               </button>
 
-              <div className="text-center">
-                <h3 className="font-bold text-gray-900">
+              <div className="text-center min-w-0 flex-1 px-2">
+                <h3 className="font-bold text-gray-900 text-sm md:text-base truncate">
                   {zoomedTemplate.name}
                 </h3>
-                <p className="text-xs text-gray-500">
+                <p className="text-[10px] md:text-xs text-gray-500">
                   {zoomedTemplate.categoryLabel}
                 </p>
               </div>
 
               <button
                 onClick={() => setZoomId(null)}
-                className="w-9 h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center transition"
+                className="w-8 h-8 md:w-9 md:h-9 rounded-lg hover:bg-gray-100 flex items-center justify-center transition shrink-0"
               >
-                <XMarkIcon className="w-5 h-5 text-gray-500" />
+                <XMarkIcon className="w-4 h-4 md:w-5 md:h-5 text-gray-500" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto bg-gray-50 p-6">
+            <div className="flex-1 overflow-y-auto bg-gray-50 p-3 md:p-6">
               <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto">
                 <zoomedTemplate.Component resumeData={demoData} large={true} />
               </div>
             </div>
 
-            <div className="p-4 border-t border-gray-200 flex gap-3 shrink-0">
+            <div className="p-3 md:p-4 border-t border-gray-200 flex gap-2 md:gap-3 shrink-0">
               <button
                 onClick={() => setZoomId(null)}
-                className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-2.5 rounded-xl font-semibold hover:bg-gray-50 transition text-sm"
+                className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-2.5 rounded-xl font-semibold hover:bg-gray-50 transition text-xs md:text-sm"
               >
                 Cancel
               </button>
@@ -291,7 +305,7 @@ export default function TemplateSelect({
                   setTemplate(zoomId);
                   setZoomId(null);
                 }}
-                className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition text-sm"
+                className="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition text-xs md:text-sm"
               >
                 Use This Template
               </button>

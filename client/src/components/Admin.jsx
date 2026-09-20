@@ -102,15 +102,19 @@ export default function Admin({ setPage }) {
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-        <p className="text-gray-600 mt-1">
+    <div className="p-3 md:p-6 max-w-6xl mx-auto">
+      {/* Header */}
+      <div className="mb-5 md:mb-8">
+        <h1 className="text-xl md:text-3xl font-bold text-gray-900 truncate">
+          Admin Dashboard
+        </h1>
+        <p className="text-xs md:text-base text-gray-600 mt-0.5 md:mt-1 truncate">
           Overview of users, resumes, and template usage
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      {/* Stat cards */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 mb-4 md:mb-6">
         <StatCard
           icon={UsersIcon}
           color="blue"
@@ -137,7 +141,8 @@ export default function Admin({ setPage }) {
         />
       </div>
 
-      <div className="flex gap-2 mb-6 flex-wrap">
+      {/* Tabs — horizontal scroll on mobile */}
+      <div className="flex gap-2 mb-4 md:mb-6 overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0 pb-1 md:pb-0 md:flex-wrap">
         {tabs.map((t) => {
           const isActive = tab === t.id;
           const Icon = t.Icon;
@@ -145,7 +150,7 @@ export default function Admin({ setPage }) {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition ${
+              className={`flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-xl font-medium text-xs md:text-sm transition shrink-0 ${
                 isActive
                   ? "bg-blue-600 text-white shadow-sm"
                   : "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50"
@@ -154,7 +159,7 @@ export default function Admin({ setPage }) {
               <Icon className="w-4 h-4" />
               {t.label}
               <span
-                className={`text-xs font-semibold px-1.5 py-0.5 rounded ${
+                className={`text-[10px] md:text-xs font-semibold px-1.5 py-0.5 rounded ${
                   isActive
                     ? "bg-white/25 text-white"
                     : "bg-gray-100 text-gray-500"
@@ -232,7 +237,7 @@ export default function Admin({ setPage }) {
               </div>,
               <span
                 key={`t-${r.resume_id}`}
-                className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium"
+                className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap"
               >
                 {r.template_id}
               </span>,
@@ -294,7 +299,7 @@ export default function Admin({ setPage }) {
               t.name,
               <span
                 key={`cat-${t.id}`}
-                className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium"
+                className="bg-blue-50 text-blue-700 px-2 py-0.5 rounded text-xs font-medium whitespace-nowrap"
               >
                 {t.categoryLabel}
               </span>,
@@ -315,16 +320,20 @@ function StatCard({ icon: Icon, color, label, value }) {
     amber: "bg-amber-100 text-amber-700",
   };
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-4 shadow-sm">
-      <div className="flex items-center gap-3">
+    <div className="bg-white rounded-2xl border border-gray-200 p-3 md:p-4 shadow-sm">
+      <div className="flex items-center gap-2 md:gap-3">
         <div
-          className={`w-11 h-11 rounded-xl flex items-center justify-center ${colors[color]}`}
+          className={`w-9 h-9 md:w-11 md:h-11 rounded-xl flex items-center justify-center shrink-0 ${colors[color]}`}
         >
-          <Icon className="w-6 h-6" />
+          <Icon className="w-5 h-5 md:w-6 md:h-6" />
         </div>
-        <div>
-          <p className="text-xs text-gray-500">{label}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <div className="min-w-0">
+          <p className="text-[10px] md:text-xs text-gray-500 truncate">
+            {label}
+          </p>
+          <p className="text-lg md:text-2xl font-bold text-gray-900">
+            {value}
+          </p>
         </div>
       </div>
     </div>
@@ -335,7 +344,7 @@ function RoleBadge({ role }) {
   const isAdmin = role === "admin";
   return (
     <span
-      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${
         isAdmin ? "bg-purple-100 text-purple-700" : "bg-gray-100 text-gray-700"
       }`}
     >
@@ -348,19 +357,24 @@ function RoleBadge({ role }) {
 function TableCard({ title, subtitle, onExport, children }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-        <div>
-          <h2 className="font-bold text-gray-900">{title}</h2>
+      <div className="flex items-center justify-between gap-3 px-3 md:px-5 py-3 md:py-4 border-b border-gray-100">
+        <div className="min-w-0">
+          <h2 className="font-bold text-gray-900 text-sm md:text-base truncate">
+            {title}
+          </h2>
           {subtitle && (
-            <p className="text-xs text-gray-500 mt-0.5">{subtitle}</p>
+            <p className="text-[10px] md:text-xs text-gray-500 mt-0.5 truncate">
+              {subtitle}
+            </p>
           )}
         </div>
         <button
           onClick={onExport}
-          className="flex items-center gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-lg text-xs font-semibold transition"
+          className="flex items-center gap-1.5 md:gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-2.5 md:px-3 py-1.5 md:py-2 rounded-lg text-[11px] md:text-xs font-semibold transition shrink-0"
         >
-          <ArrowDownTrayIcon className="w-4 h-4" />
-          Export CSV
+          <ArrowDownTrayIcon className="w-3.5 h-3.5 md:w-4 md:h-4" />
+          <span className="hidden sm:inline">Export CSV</span>
+          <span className="sm:hidden">CSV</span>
         </button>
       </div>
       <div className="overflow-x-auto">{children}</div>
@@ -371,7 +385,9 @@ function TableCard({ title, subtitle, onExport, children }) {
 function Table({ head, body }) {
   if (!body.length) {
     return (
-      <div className="p-16 text-center text-gray-500">No data available.</div>
+      <div className="p-10 md:p-16 text-center text-gray-500 text-sm md:text-base">
+        No data available.
+      </div>
     );
   }
   return (
@@ -381,7 +397,7 @@ function Table({ head, body }) {
           {head.map((h) => (
             <th
               key={h}
-              className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
+              className="px-3 md:px-4 py-2.5 md:py-3 text-left text-[10px] md:text-xs font-semibold text-gray-600 uppercase tracking-wider whitespace-nowrap"
             >
               {h}
             </th>
@@ -394,7 +410,7 @@ function Table({ head, body }) {
             {row.map((cell, j) => (
               <td
                 key={j}
-                className="px-4 py-3 text-sm text-gray-700 align-top"
+                className="px-3 md:px-4 py-2.5 md:py-3 text-xs md:text-sm text-gray-700 align-top whitespace-nowrap"
               >
                 {cell}
               </td>

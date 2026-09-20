@@ -29,7 +29,6 @@ export default function ResumeForm({
 
   const update = (field, value) => {
     setResumeData({ ...resumeData, [field]: value });
-    // clear the red error of this field as soon as the user edits it
     if (errors[field]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -39,7 +38,6 @@ export default function ResumeForm({
     }
   };
 
-  // Check the required fields before leaving the form
   const goTo = (nextPage) => {
     const found = validateResume(resumeData);
     if (Object.keys(found).length > 0) {
@@ -139,18 +137,20 @@ export default function ResumeForm({
     update("languages", languages.filter((x) => x !== l));
 
   return (
-    <div className="p-6 max-w-[1400px] mx-auto">
-      <div className="flex items-start justify-between mb-8 gap-6 flex-wrap">
-        <div className="flex items-center gap-4">
+    <div className="p-3 md:p-6 max-w-[1400px] mx-auto">
+      {/* Stepper + Tip — stacked on mobile, side-by-side on desktop */}
+      <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-5 md:mb-8 gap-3 md:gap-6">
+        {/* Stepper — centered on mobile, left on desktop */}
+        <div className="flex items-center justify-center md:justify-start gap-2 md:gap-4">
           {[
             { n: 1, label: "Your Details" },
             { n: 2, label: "Choose Template" },
             { n: 3, label: "Preview & Download" },
           ].map((s, i) => (
-            <div key={s.n} className="flex items-center gap-3">
-              <div className="flex flex-col items-center">
+            <div key={s.n} className="flex items-center gap-2 md:gap-3">
+              <div className="flex flex-col items-center shrink-0">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm ${
+                  className={`w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center font-bold text-xs md:text-sm ${
                     s.n === 1
                       ? "bg-blue-600 text-white"
                       : "bg-white border-2 border-gray-300 text-gray-500"
@@ -159,35 +159,38 @@ export default function ResumeForm({
                   {s.n}
                 </div>
                 <span
-                  className={`text-xs mt-1 font-medium ${
+                  className={`text-[10px] md:text-xs mt-1 font-medium whitespace-nowrap ${
                     s.n === 1 ? "text-blue-700" : "text-gray-500"
                   }`}
                 >
                   {s.label}
                 </span>
               </div>
-              {i < 2 && <div className="w-16 h-px bg-gray-300 mb-5"></div>}
+              {i < 2 && (
+                <div className="w-6 md:w-16 h-px bg-gray-300 mb-4 md:mb-5"></div>
+              )}
             </div>
           ))}
         </div>
 
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 flex items-start gap-3 max-w-md">
-          <LightBulbIcon className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-          <p className="text-xs text-blue-800 leading-snug">
+        {/* Tip — below stepper on mobile, right on desktop */}
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-2.5 md:p-3 flex items-start gap-2 md:gap-3 md:max-w-md">
+          <LightBulbIcon className="w-4 h-4 md:w-5 md:h-5 text-blue-600 shrink-0 mt-0.5" />
+          <p className="text-[11px] md:text-xs text-blue-800 leading-snug">
             Keep your information concise and professional.
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3 space-y-5">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="lg:col-span-3 space-y-4 md:space-y-5">
           <Card
             Icon={UserIcon}
             title="Personal Information"
             subtitle="Let's start with your basic details"
             badge="Step 1 of 3"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <Field label="Full Name" required error={errors.name}>
                 <input
                   className={inputStyle(errors.name)}
@@ -265,11 +268,11 @@ export default function ResumeForm({
             title="Education"
             subtitle="Add your educational background"
           >
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {resumeData.education.map((edu, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl relative"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 rounded-xl relative"
                 >
                   {resumeData.education.length > 1 && (
                     <button
@@ -323,9 +326,9 @@ export default function ResumeForm({
               ))}
               <button
                 onClick={addEducation}
-                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-xs md:text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Add Another Education
               </button>
             </div>
@@ -336,11 +339,11 @@ export default function ResumeForm({
             title="Experience"
             subtitle="Add your work experience (if any)"
           >
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {resumeData.experience.map((exp, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl relative"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 rounded-xl relative"
                 >
                   {resumeData.experience.length > 1 && (
                     <button
@@ -407,9 +410,9 @@ export default function ResumeForm({
               ))}
               <button
                 onClick={addExperience}
-                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-xs md:text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Add Experience
               </button>
             </div>
@@ -420,11 +423,11 @@ export default function ResumeForm({
             title="Projects"
             subtitle="Add projects you have built (very useful for freshers)"
           >
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {projects.map((p, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl relative"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 rounded-xl relative"
                 >
                   <button
                     onClick={() => removeProject(i)}
@@ -478,9 +481,9 @@ export default function ResumeForm({
               ))}
               <button
                 onClick={addProject}
-                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-xs md:text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Add Project
               </button>
             </div>
@@ -497,13 +500,13 @@ export default function ResumeForm({
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
                 onKeyDown={addSkill}
-                placeholder="Type a skill and press Enter..."
+                placeholder="Type a skill..."
               />
               <button
                 onClick={addSkill}
-                className="bg-blue-600 text-white px-5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center gap-1.5"
+                className="bg-blue-600 text-white px-3 md:px-5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center gap-1.5 text-sm shrink-0"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Add
               </button>
             </div>
@@ -533,11 +536,11 @@ export default function ResumeForm({
             title="Certifications"
             subtitle="Courses and certificates you have completed"
           >
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               {certifications.map((c, i) => (
                 <div
                   key={i}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-xl relative"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 p-3 md:p-4 bg-gray-50 rounded-xl relative"
                 >
                   <button
                     onClick={() => removeCert(i)}
@@ -576,9 +579,9 @@ export default function ResumeForm({
               ))}
               <button
                 onClick={addCert}
-                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
+                className="w-full border-2 border-dashed border-blue-300 text-blue-600 py-2.5 rounded-xl text-xs md:text-sm font-semibold hover:bg-blue-50 transition flex items-center justify-center gap-2"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Add Certification
               </button>
             </div>
@@ -595,13 +598,13 @@ export default function ResumeForm({
                 value={langInput}
                 onChange={(e) => setLangInput(e.target.value)}
                 onKeyDown={addLanguage}
-                placeholder="Type a language and press Enter..."
+                placeholder="Type a language..."
               />
               <button
                 onClick={addLanguage}
-                className="bg-blue-600 text-white px-5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center gap-1.5"
+                className="bg-blue-600 text-white px-3 md:px-5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center gap-1.5 text-sm shrink-0"
               >
-                <PlusIcon className="w-5 h-5" />
+                <PlusIcon className="w-4 h-4 md:w-5 md:h-5" />
                 Add
               </button>
             </div>
@@ -626,17 +629,17 @@ export default function ResumeForm({
             )}
           </Card>
 
-          <div className="flex gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2">
             <button
               onClick={() => goTo("preview")}
-              className="flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2"
+              className="w-full sm:flex-1 bg-white border-2 border-gray-300 text-gray-700 py-3 rounded-xl font-semibold hover:bg-gray-50 transition flex items-center justify-center gap-2"
             >
               <EyeIcon className="w-5 h-5" />
               Skip to Preview
             </button>
             <button
               onClick={() => goTo("template")}
-              className="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 shadow-md transition flex items-center justify-center gap-2"
+              className="w-full sm:flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 shadow-md transition flex items-center justify-center gap-2"
             >
               Next: Choose Template
               <ArrowRightIcon className="w-5 h-5" />
@@ -661,7 +664,6 @@ export default function ResumeForm({
 const inputClass =
   "w-full px-3 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white";
 
-// red border when the field has an error
 const inputStyle = (error) =>
   error ? inputClass.replace("border-gray-300", "border-red-500") : inputClass;
 
@@ -679,17 +681,21 @@ function Field({ label, required, error, children }) {
 
 function Card({ Icon, title, subtitle, badge, children }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
-      <div className="flex items-center gap-3 mb-5">
-        <div className="w-11 h-11 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center">
-          <Icon className="w-6 h-6" />
+    <div className="bg-white rounded-2xl border border-gray-200 p-4 md:p-6 shadow-sm">
+      <div className="flex items-center gap-2.5 md:gap-3 mb-4 md:mb-5">
+        <div className="w-9 h-9 md:w-11 md:h-11 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center shrink-0">
+          <Icon className="w-5 h-5 md:w-6 md:h-6" />
         </div>
-        <div className="flex-1">
-          <h2 className="font-bold text-gray-900 text-base">{title}</h2>
-          <p className="text-xs text-gray-500">{subtitle}</p>
+        <div className="flex-1 min-w-0">
+          <h2 className="font-bold text-gray-900 text-sm md:text-base truncate">
+            {title}
+          </h2>
+          <p className="text-[11px] md:text-xs text-gray-500 truncate">
+            {subtitle}
+          </p>
         </div>
         {badge && (
-          <span className="bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+          <span className="bg-blue-50 text-blue-700 text-[10px] md:text-xs font-semibold px-2 md:px-3 py-1 rounded-full shrink-0">
             {badge}
           </span>
         )}

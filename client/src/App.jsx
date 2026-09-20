@@ -80,7 +80,6 @@ function App() {
     setPage(loggedInUser.role === "admin" ? "admin" : "form");
   };
 
-  // "Create New" from My Resumes: blank form, next Save creates a new resume
   const startNewResume = () => {
     setResumeData(emptyResume);
     setTemplate("minimal-mark");
@@ -105,7 +104,10 @@ function App() {
       <div className="flex items-start">
         <Sidebar currentPage={page} setPage={setPage} />
 
-        <main key={page} className="animate-page-in flex-1 min-w-0">
+        <main
+          key={page}
+          className="animate-page-in flex-1 min-w-0 pb-28 md:pb-0"
+        >
           {page === "admin" && <Admin setPage={setPage} />}
           {page === "resumes" && (
             <MyResumes
