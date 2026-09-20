@@ -3,10 +3,8 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------
-   Print styles for "Text PDF (ATS)" — real selectable text
+   Print copy of the resume (used by the "Text PDF (ATS)" button)
    --------------------------------------------------------------- */
-
-/* Print copy is hidden on screen */
 #print-root {
   display: none;
 }
@@ -16,49 +14,72 @@
     size: A4;
     margin: 12mm 10mm;
   }
-
   html,
   body {
     margin: 0;
     padding: 0;
     background: #fff;
   }
-
-  /* Hide the whole app */
   #root {
     display: none !important;
   }
-
-  /* Show only the print resume */
   #print-root {
     display: block !important;
     width: 100%;
   }
-
-  /* Force exact colors (dark sidebar, colored accents) */
   #print-root,
   #print-root * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-
-  /* Prevent sections from being cut in the middle of a page */
   #print-root section,
   #print-root .no-break {
     page-break-inside: avoid;
     break-inside: avoid;
   }
-
-  /* Keep headers glued to their content */
   #print-root h1,
   #print-root h2,
   #print-root h3 {
     page-break-after: avoid;
     break-after: avoid;
   }
-
-  /* Remove shadows / rounded corners that look bad in print */
   #print-root * {
     box-shadow: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Animations
+   --------------------------------------------------------------- */
+
+/* Smooth hover and press feel for every button */
+button:not(:disabled) {
+  transition-property: transform, background-color, border-color, color,
+    box-shadow, opacity;
+  transition-duration: 150ms;
+  transition-timing-function: ease-out;
+}
+button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* People who turned animations off in their system get no motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Never animate while printing / saving Text PDF */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
   }
 }

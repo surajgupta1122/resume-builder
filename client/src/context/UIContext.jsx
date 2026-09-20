@@ -18,7 +18,6 @@ export function UIProvider({ children }) {
   const [toasts, setToasts] = useState([]);
   const [confirmState, setConfirmState] = useState(null);
 
-  // ------- TOAST -------
   const toast = useCallback((message, type = "info") => {
     const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { id, message, type }]);
@@ -30,7 +29,6 @@ export function UIProvider({ children }) {
   const dismissToast = (id) =>
     setToasts((prev) => prev.filter((t) => t.id !== id));
 
-  // ------- CONFIRM -------
   const confirm = useCallback((options) => {
     return new Promise((resolve) => {
       setConfirmState({
@@ -55,14 +53,12 @@ export function UIProvider({ children }) {
     <UIContext.Provider value={{ toast, confirm }}>
       {children}
 
-      {/* Toasts */}
       <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none">
         {toasts.map((t) => (
           <ToastItem key={t.id} toast={t} onClose={() => dismissToast(t.id)} />
         ))}
       </div>
 
-      {/* Confirm modal */}
       {confirmState && (
         <ConfirmDialog
           {...confirmState}
@@ -95,9 +91,7 @@ function ToastItem({ toast, onClose }) {
 
   return (
     <div
-      className={`pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border min-w-[280px] max-w-sm ${
-        colors[toast.type]
-      }`}
+      className={`animate-toast pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl shadow-lg border min-w-[280px] max-w-sm ${colors[toast.type]}`}
     >
       <Icon className={`w-5 h-5 shrink-0 mt-0.5 ${iconColors[toast.type]}`} />
       <p className="text-sm font-medium flex-1">{toast.message}</p>
@@ -123,11 +117,11 @@ function ConfirmDialog({
   const isDanger = variant === "danger";
   return (
     <div
-      className="fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4"
+      className="animate-fade-in fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4"
       onClick={onCancel}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+        className="animate-scale-in bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-6 text-center">

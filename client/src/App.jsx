@@ -105,7 +105,7 @@ function App() {
       <div className="flex items-start">
         <Sidebar currentPage={page} setPage={setPage} />
 
-        <main className="flex-1 min-w-0">
+        <main key={page} className="animate-page-in flex-1 min-w-0">
           {page === "admin" && <Admin setPage={setPage} />}
           {page === "resumes" && (
             <MyResumes
