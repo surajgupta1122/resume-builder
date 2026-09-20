@@ -1,7 +1,8 @@
-// Use this instead of fetch() for every API that needs login.
-// It adds the JWT token to the request automatically.
-export async function authFetch(url, options = {}) {
+import { API_URL } from "./config";
+
+export async function authFetch(path, options = {}) {
   const token = localStorage.getItem("token");
+  const url = path.startsWith("http") ? path.replace(/^https?:\/\/[^/]+/, API_URL) : `${API_URL}${path}`;
 
   const res = await fetch(url, {
     ...options,
@@ -12,7 +13,6 @@ export async function authFetch(url, options = {}) {
     },
   });
 
-  // Token missing / expired -> log the user out and show the login page
   if (res.status === 401) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");

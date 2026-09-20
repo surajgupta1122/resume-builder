@@ -1,10 +1,9 @@
 import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
-import { useUI } from "../context/UIContext";
+import { API_URL } from "../config";
 
 export default function Login({ setUser, setPage }) {
-  const { toast } = useUI();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -12,14 +11,14 @@ export default function Login({ setUser, setPage }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      toast("Please fill in all fields", "error");
+      alert("Please fill in all fields.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:5000/api/login", {
+      const res = await fetch(`${API_URL}/api/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -30,10 +29,10 @@ export default function Login({ setUser, setPage }) {
         localStorage.setItem("token", data.token);
         setUser(data.user);
       } else {
-        toast(data.message || "Invalid email or password", "error");
+        alert(data.message || "Invalid email or password.");
       }
     } catch {
-      toast("Server not reachable. Is backend running?", "error");
+      alert("Server not reachable. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }

@@ -2,10 +2,9 @@ import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
 import { isValidEmail } from "../validators";
-import { useUI } from "../context/UIContext";
+import { API_URL } from "../config";
 
 export default function Register({ setPage }) {
-  const { toast } = useUI();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,25 +13,25 @@ export default function Register({ setPage }) {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) {
-      toast("Please fill in all fields", "error");
+      alert("Please fill in all fields.");
       return;
     }
     if (name.trim().length < 2) {
-      toast("Name must be at least 2 characters", "error");
+      alert("Name must be at least 2 characters.");
       return;
     }
     if (!isValidEmail(email)) {
-      toast("Please enter a valid email address", "error");
+      alert("Please enter a valid email address.");
       return;
     }
     if (password.length < 6) {
-      toast("Password must be at least 6 characters", "error");
+      alert("Password must be at least 6 characters.");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/register", {
+      const res = await fetch(`${API_URL}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
@@ -40,13 +39,13 @@ export default function Register({ setPage }) {
       const data = await res.json();
 
       if (res.ok) {
-        toast("Registration successful! Please log in.", "success");
+        alert("Registration successful! Please log in.");
         setPage("login");
       } else {
-        toast(data.message || "Registration failed", "error");
+        alert(data.message || "Registration failed.");
       }
     } catch {
-      toast("Server not reachable. Is backend running?", "error");
+      alert("Server not reachable. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
