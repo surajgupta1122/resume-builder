@@ -56,7 +56,7 @@ export default function Register({ setPage }) {
   return (
     <div className="flex min-h-screen">
       {/* Left Side — Branding (desktop only) */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-50 to-emerald-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-green-200 rounded-r-3xl">
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-50 to-emerald-100 flex-col justify-center items-center border-r-2 border-green-200 rounded-r-3xl">
         <ResumeIcon size={180} theme="green" />
         <div className="max-w-md text-center mt-6">
           <h1 className="text-3xl lg:text-5xl font-extrabold text-green-900 mb-3 lg:mb-4">
