@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Squares2X2Icon,
   SparklesIcon,
@@ -22,6 +22,16 @@ export default function TemplateSelect({
 }) {
   const [filter, setFilter] = useState("all");
   const [zoomId, setZoomId] = useState(null);
+
+  // Lock background scroll while the zoom modal is open
+  useEffect(() => {
+    if (!zoomId) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [zoomId]);
 
   const categoryIcons = {
     all: { Icon: Squares2X2Icon, bg: "bg-indigo-100", color: "text-indigo-600" },
