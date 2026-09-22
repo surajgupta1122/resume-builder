@@ -1,7 +1,7 @@
 const mysql = require("mysql2");
 require("dotenv").config();
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
@@ -12,14 +12,9 @@ const db = mysql.createConnection({
     minVersion: "TLSv1.2",
   },
   connectTimeout: 30000,
-});
-
-db.connect((err) => {
-  if (err) {
-    console.log("DB connection failed:", err.message);
-  } else {
-    console.log("MySQL connected (Aiven)");
-  }
+  waitForConnections: true,
+  connectionLimit: 5,
+  queueLimit: 0,
 });
 
 module.exports = db;

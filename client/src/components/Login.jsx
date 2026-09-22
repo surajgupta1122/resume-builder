@@ -2,8 +2,10 @@ import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
 import { API_URL } from "../config";
+import { useUI } from "../context/UIContext";
 
 export default function Login({ setUser, setPage }) {
+  const { toast } = useUI();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -11,7 +13,7 @@ export default function Login({ setUser, setPage }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      alert("Please fill in all fields.");
+      toast("Please fill in all fields", "error");
       return;
     }
 
@@ -28,11 +30,12 @@ export default function Login({ setUser, setPage }) {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         setUser(data.user);
+        toast("Login successful", "success");
       } else {
-        alert(data.message || "Invalid email or password.");
+        toast(data.message || "Invalid email or password", "error");
       }
     } catch {
-      alert("Server not reachable. Make sure the backend is running.");
+      toast("Server not reachable. Is backend running?", "error");
     } finally {
       setLoading(false);
     }
@@ -40,7 +43,6 @@ export default function Login({ setUser, setPage }) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Side — Branding (desktop only) */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-blue-200 rounded-r-3xl">
         <ResumeIcon size={180} />
         <div className="max-w-md text-center mt-6">
@@ -58,10 +60,8 @@ export default function Login({ setUser, setPage }) {
         </div>
       </div>
 
-      {/* Right Side — Login Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 bg-white">
         <div className="w-full max-w-md md:max-w-xl px-2 py-6 md:p-12 bg-white rounded-3xl">
-          {/* Mobile brand header (only on small screens) */}
           <div className="md:hidden flex flex-col items-center mb-6">
             <ResumeIcon size={100} />
             <h1 className="text-2xl font-extrabold text-blue-900 mt-3">

@@ -3,8 +3,10 @@ import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
 import { isValidEmail } from "../validators";
 import { API_URL } from "../config";
+import { useUI } from "../context/UIContext";
 
 export default function Register({ setPage }) {
+  const { toast } = useUI();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -13,19 +15,19 @@ export default function Register({ setPage }) {
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!name || !email || !password) {
-      alert("Please fill in all fields.");
+      toast("Please fill in all fields", "error");
       return;
     }
     if (name.trim().length < 2) {
-      alert("Name must be at least 2 characters.");
+      toast("Name must be at least 2 characters", "error");
       return;
     }
     if (!isValidEmail(email)) {
-      alert("Please enter a valid email address.");
+      toast("Please enter a valid email address", "error");
       return;
     }
     if (password.length < 6) {
-      alert("Password must be at least 6 characters.");
+      toast("Password must be at least 6 characters", "error");
       return;
     }
 
@@ -39,13 +41,13 @@ export default function Register({ setPage }) {
       const data = await res.json();
 
       if (res.ok) {
-        alert("Registration successful! Please log in.");
+        toast("Registration successful! Please log in.", "success");
         setPage("login");
       } else {
-        alert(data.message || "Registration failed.");
+        toast(data.message || "Registration failed", "error");
       }
     } catch {
-      alert("Server not reachable. Make sure the backend is running.");
+      toast("Server not reachable. Is backend running?", "error");
     } finally {
       setLoading(false);
     }
@@ -53,7 +55,6 @@ export default function Register({ setPage }) {
 
   return (
     <div className="flex min-h-screen">
-      {/* Left Side — Branding (desktop only) */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-50 to-emerald-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-green-200 rounded-r-3xl">
         <ResumeIcon size={180} theme="green" />
         <div className="max-w-md text-center mt-6">
@@ -72,10 +73,8 @@ export default function Register({ setPage }) {
         </div>
       </div>
 
-      {/* Right Side — Register Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 bg-white">
         <div className="w-full max-w-md md:max-w-xl px-2 py-6 md:p-12 bg-white rounded-3xl">
-          {/* Mobile brand header (only on small screens) */}
           <div className="md:hidden flex flex-col items-center mb-6">
             <ResumeIcon size={100} theme="green" />
             <h1 className="text-2xl font-extrabold text-green-900 mt-3">

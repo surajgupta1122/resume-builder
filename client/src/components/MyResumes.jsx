@@ -3,15 +3,14 @@ import {
   PlusIcon,
   DocumentTextIcon,
   TrashIcon,
+  FolderOpenIcon,
 } from "@heroicons/react/24/outline";
 import { authFetch } from "../api";
 import { useUI } from "../context/UIContext";
-import { templateList } from "./templates/templateList";
-import TemplateMinimalMark from "./templates/TemplateMinimalMark";
+import { API_URL } from "../config";
 
 export default function MyResumes({
   setPage,
-  resumeData,
   setResumeData,
   setTemplate,
   onCreateNew,
@@ -24,7 +23,7 @@ export default function MyResumes({
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return setPage("login");
 
-    authFetch(`http://localhost:5000/api/resumes/${user.id}`)
+    authFetch(`${API_URL}/api/resumes/${user.id}`)
       .then((r) => r.json())
       .then((data) => {
         setResumes(Array.isArray(data) ? data : []);
@@ -51,8 +50,7 @@ export default function MyResumes({
     }
   };
 
-  const handleDelete = async (e, id) => {
-    e.stopPropagation();
+  const handleDelete = async (id) => {
     const ok = await confirm({
       title: "Delete this resume?",
       message: "This action cannot be undone.",
@@ -63,7 +61,7 @@ export default function MyResumes({
     if (!ok) return;
 
     try {
-      const res = await authFetch(`http://localhost:5000/api/resume/${id}`, {
+      const res = await authFetch(`${API_URL}/api/resume/${id}`, {
         method: "DELETE",
       });
       if (!res.ok) return toast("Cannot delete this resume", "error");
@@ -78,8 +76,7 @@ export default function MyResumes({
   };
 
   return (
-    <div className="p-3 md:p-6 max-w-6xl mx-auto">
-      {/* Header */}
+    <div className="p-3 md:p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between gap-3 mb-5 md:mb-8">
         <div className="min-w-0">
           <h1 className="text-xl md:text-3xl font-bold text-gray-900 truncate">
@@ -123,82 +120,73 @@ export default function MyResumes({
       )}
 
       {!loading && resumes.length > 0 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
           {resumes.map((r) => {
-            let parsed = {};
+            let name = "Untitled";
+            let title = "";
+            let skills = [];
             try {
-              parsed = JSON.parse(r.content);
+              const parsed = JSON.parse(r.content);
+              name = parsed.name || "Untitled";
+              title = parsed.title || "";
+              skills = (parsed.skills || []).slice(0, 3);
             } catch {}
-
-            const name = parsed.name || "Untitled";
-            const templateInfo = templateList.find(
-              (t) => t.id === r.template_id
-            );
-            const categoryLabel = templateInfo?.categoryLabel || "Minimal";
-            const Comp = templateInfo?.Component || TemplateMinimalMark;
-            const isSelected = resumeData?.resume_id === r.resume_id;
 
             return (
               <div
                 key={r.resume_id}
-                onClick={() => handleOpen(r)}
-                className={`group relative bg-white rounded-2xl border-2 overflow-hidden cursor-pointer transition-all duration-200 hover:shadow-lg ${
-                  isSelected
-                    ? "border-blue-600 ring-2 ring-blue-100"
-                    : "border-gray-200 hover:border-gray-300"
-                }`}
+                className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-md transition overflow-hidden flex flex-col"
               >
-                {/* Mini resume preview */}
-                <div className="relative aspect-[8.5/11] overflow-hidden bg-white">
-                  <div
-                    className="absolute top-0 left-0 origin-top-left pointer-events-none"
-                    style={{
-                      width: "300%",
-                      height: "300%",
-                      transform: "scale(0.3333)",
-                    }}
-                  >
-                    <Comp resumeData={parsed} large={true} />
+                <div className="bg-slate-900 text-white p-3 md:p-4 flex items-center gap-3">
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gray-300 flex items-center justify-center text-slate-700 font-bold text-base md:text-lg shrink-0">
+                    {name.charAt(0).toUpperCase()}
                   </div>
-
-                  {/* Selected checkmark */}
-                  {isSelected && (
-                    <div className="absolute top-2 right-2 w-7 h-7 bg-blue-600 rounded-full flex items-center justify-center shadow-md z-10">
-                      <svg
-                        className="w-4 h-4 text-white"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={3}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
-                  )}
-
-                  {/* Delete button */}
-                  <button
-                    onClick={(e) => handleDelete(e, r.resume_id)}
-                    className="absolute top-1.5 left-1.5 w-7 h-7 rounded-full bg-white/95 text-red-500 hover:bg-red-500 hover:text-white transition flex items-center justify-center shadow-md z-20 opacity-0 group-hover:opacity-100 md:opacity-0"
-                    style={{ opacity: 1 }}
-                    title="Delete resume"
-                  >
-                    <TrashIcon className="w-3.5 h-3.5" />
-                  </button>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold truncate text-sm md:text-base">
+                      {name}
+                    </p>
+                    <p className="text-[11px] md:text-xs text-gray-400 truncate">
+                      {title || "No title"}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Name + category */}
-                <div className="p-2.5 border-t border-gray-100 bg-white">
-                  <p className="font-bold text-gray-900 text-xs md:text-sm truncate">
-                    {name}
+                <div className="p-3 md:p-4 flex-1">
+                  <p className="text-[11px] md:text-xs text-gray-500 mb-1 md:mb-2">
+                    Created: {new Date(r.created_at).toLocaleDateString()}
                   </p>
-                  <p className="text-[10px] md:text-xs text-gray-500 mt-0.5 truncate">
-                    {categoryLabel}
+                  <p className="text-[11px] md:text-xs text-gray-500 mb-2 md:mb-3 truncate">
+                    Template: {r.template_id}
                   </p>
+
+                  {skills.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2 md:mb-3">
+                      {skills.map((s) => (
+                        <span
+                          key={s}
+                          className="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-2.5 md:p-3 border-t border-gray-100 flex gap-2">
+                  <button
+                    onClick={() => handleOpen(r)}
+                    className="flex-1 bg-blue-600 text-white text-xs md:text-sm py-2 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-1.5"
+                  >
+                    <FolderOpenIcon className="w-4 h-4" />
+                    Open
+                  </button>
+                  <button
+                    onClick={() => handleDelete(r.resume_id)}
+                    className="bg-white border border-red-300 text-red-500 text-xs md:text-sm px-3 py-2 rounded-lg font-semibold hover:bg-red-50 transition flex items-center justify-center"
+                  >
+                    <TrashIcon className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             );

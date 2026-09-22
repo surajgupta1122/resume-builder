@@ -12,6 +12,7 @@ import LivePreview from "./LivePreview";
 import { authFetch } from "../api";
 import { useUI } from "../context/UIContext";
 import { validateResume } from "../validators";
+import { API_URL } from "../config";
 
 export default function Preview({
   resumeData,
@@ -84,8 +85,8 @@ export default function Preview({
 
     const isUpdate = !!d.resume_id;
     const url = isUpdate
-      ? `http://localhost:5000/api/resume/${d.resume_id}`
-      : "http://localhost:5000/api/resume";
+      ? `${API_URL}/api/resume/${d.resume_id}`
+      : `${API_URL}/api/resume`;
 
     try {
       const res = await authFetch(url, {
@@ -151,7 +152,7 @@ export default function Preview({
         ))}
       </div>
 
-      {/* Action buttons — responsive */}
+      {/* Action buttons */}
       <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 md:gap-3 mb-5 md:mb-6">
         <button
           onClick={() => setPage("template")}
@@ -187,7 +188,6 @@ export default function Preview({
         </button>
       </div>
 
-      {/* Resume preview */}
       <LivePreview
         resumeData={resumeData}
         template={template}

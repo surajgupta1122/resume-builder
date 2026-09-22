@@ -10,6 +10,7 @@ import {
 import { templateList } from "./templates/templateList";
 import { useUI } from "../context/UIContext";
 import { authFetch } from "../api";
+import { API_URL } from "../config";
 
 export default function Admin({ setPage }) {
   const { toast } = useUI();
@@ -22,7 +23,7 @@ export default function Admin({ setPage }) {
 
   useEffect(() => {
     const get = (path) =>
-      authFetch(`http://localhost:5000/api/admin/${path}`).then((r) => {
+      authFetch(`${API_URL}/api/admin/${path}`).then((r) => {
         if (!r.ok) return [];
         return r.json();
       });
@@ -40,7 +41,7 @@ export default function Admin({ setPage }) {
         setActivity(Array.isArray(a) ? a : []);
       })
       .catch(() =>
-        toast("Cannot load admin data. Is backend running?", "error")
+        toast("Cannot load admin data. Is backend running?", "error"),
       )
       .finally(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,7 +59,7 @@ export default function Admin({ setPage }) {
             const val = row[h] ?? "";
             return `"${String(val).replace(/"/g, '""')}"`;
           })
-          .join(",")
+          .join(","),
       ),
     ].join("\n");
 
@@ -179,10 +180,7 @@ export default function Admin({ setPage }) {
       )}
 
       {!loading && tab === "users" && (
-        <TableCard
-          title="All Users"
-          onExport={() => exportCSV(users, "users")}
-        >
+        <TableCard title="All Users" onExport={() => exportCSV(users, "users")}>
           <Table
             head={["ID", "Name", "Email", "Role", "Joined"]}
             body={users.map((u) => [
@@ -288,7 +286,7 @@ export default function Admin({ setPage }) {
                 category: t.categoryLabel,
                 description: t.description,
               })),
-              "templates"
+              "templates",
             )
           }
         >
@@ -331,9 +329,7 @@ function StatCard({ icon: Icon, color, label, value }) {
           <p className="text-[10px] md:text-xs text-gray-500 truncate">
             {label}
           </p>
-          <p className="text-lg md:text-2xl font-bold text-gray-900">
-            {value}
-          </p>
+          <p className="text-lg md:text-2xl font-bold text-gray-900">{value}</p>
         </div>
       </div>
     </div>
