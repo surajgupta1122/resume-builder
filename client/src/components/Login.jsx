@@ -2,10 +2,8 @@ import { useState } from "react";
 import ResumeIcon from "./ResumeIcon";
 import resumeIllustration from "../assets/icon.png";
 import { API_URL } from "../config";
-import { useUI } from "../context/UIContext";
 
 export default function Login({ setUser, setPage }) {
-  const { toast } = useUI();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -13,7 +11,7 @@ export default function Login({ setUser, setPage }) {
   const handleLogin = async (e) => {
     e.preventDefault();
     if (!email || !password) {
-      toast("Please fill in all fields", "error");
+      alert("Please fill in all fields.");
       return;
     }
 
@@ -30,21 +28,20 @@ export default function Login({ setUser, setPage }) {
       if (res.ok) {
         localStorage.setItem("token", data.token);
         setUser(data.user);
-        toast("Login successful", "success");
       } else {
-        toast(data.message || "Invalid email or password", "error");
+        alert(data.message || "Invalid email or password.");
       }
     } catch {
-      toast("Server not reachable. Is backend running?", "error");
+      alert("Server not reachable. Make sure the backend is running.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen overflow-x-hidden">
+    <div className="flex min-h-screen">
       {/* Left Side — Branding (desktop only) */}
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-blue-200 rounded-r-3xl overflow-hidden">
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-blue-200 rounded-r-3xl">
         <ResumeIcon size={180} />
         <div className="max-w-md text-center mt-6">
           <h1 className="text-3xl lg:text-5xl font-extrabold text-blue-900 mb-3 lg:mb-4">
@@ -64,9 +61,9 @@ export default function Login({ setUser, setPage }) {
       {/* Right Side — Login Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 bg-white">
         <div className="w-full max-w-md md:max-w-xl px-2 py-6 md:p-12 bg-white rounded-3xl">
-          {/* Mobile brand header */}
-          <div className="md:hidden flex flex-col items-center mb-6 w-full overflow-hidden">
-            <ResumeIcon size={80} />
+          {/* Mobile brand header (only on small screens) */}
+          <div className="md:hidden flex flex-col items-center mb-6">
+            <ResumeIcon size={100} />
             <h1 className="text-2xl font-extrabold text-blue-900 mt-3">
               Resume Builder
             </h1>
