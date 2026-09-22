@@ -12,6 +12,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { templateList, templateCategories } from "./templates/templateList";
 import { demoData } from "./templates/demoData";
+import ResumeScale from "./ResumeScale";
 
 export default function TemplateSelect({
   template,
@@ -289,7 +290,9 @@ export default function TemplateSelect({
 
             <div className="flex-1 overflow-y-auto bg-gray-50 p-3 md:p-6">
               <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-3xl mx-auto">
-                <zoomedTemplate.Component resumeData={demoData} large={true} />
+                <ResumeScale baseWidth={780}>
+                  <zoomedTemplate.Component resumeData={demoData} large={true} />
+                </ResumeScale>
               </div>
             </div>
 
