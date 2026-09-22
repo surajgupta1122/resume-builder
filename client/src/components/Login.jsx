@@ -42,8 +42,9 @@ export default function Login({ setUser, setPage }) {
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-blue-200 rounded-r-3xl">
+    <div className="flex min-h-screen overflow-x-hidden">
+      {/* Left Side — Branding (desktop only) */}
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-blue-50 to-indigo-100 flex-col justify-center items-center px-6 lg:px-12 py-8 border-r-2 border-blue-200 rounded-r-3xl overflow-hidden">
         <ResumeIcon size={180} />
         <div className="max-w-md text-center mt-6">
           <h1 className="text-3xl lg:text-5xl font-extrabold text-blue-900 mb-3 lg:mb-4">
@@ -60,10 +61,12 @@ export default function Login({ setUser, setPage }) {
         </div>
       </div>
 
+      {/* Right Side — Login Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-4 md:p-6 bg-white">
         <div className="w-full max-w-md md:max-w-xl px-2 py-6 md:p-12 bg-white rounded-3xl">
-          <div className="md:hidden flex flex-col items-center mb-6">
-            <ResumeIcon size={100} />
+          {/* Mobile brand header */}
+          <div className="md:hidden flex flex-col items-center mb-6 w-full overflow-hidden">
+            <ResumeIcon size={80} />
             <h1 className="text-2xl font-extrabold text-blue-900 mt-3">
               Resume Builder
             </h1>

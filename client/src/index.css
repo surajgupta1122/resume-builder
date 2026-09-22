@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Prevent horizontal scroll globally */
+html,
+body {
+  overflow-x: hidden;
+}
+
 /* ---------------------------------------------------------------
    Print copy of the resume (used by the "Text PDF (ATS)" button)
    --------------------------------------------------------------- */
